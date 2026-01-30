@@ -1,0 +1,29 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "always", // Fix all possible issues on save
+    "source.fixAll.eslint": "never", // Fix ESLint issues specifically
+    "source.organizeImports": "always", // Automatically organize imports
+    "source.sortMembers": "always" // Sort members of classes/functions
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.tabSize": 2,
+  "eslint.run": "onSave", // Run ESLint on save
+  "eslint.format.enable": true, // Enable ESLint's formatting
+  "eslint.validate": [
+    "javascript",
+    "typescript",
+    "javascriptreact",
+    "typescriptreact"
+  ],
+  "eslint.codeActionsOnSave.rules": ["source.fixAll.eslint"],
+  "files.autoSave": "off", // Disable auto-save if not required
+  "editor.formatOnSave": true, // Enable format on save
+  "files.trimTrailingWhitespace": true, // Trim trailing whitespace
+  "files.insertFinalNewline": true, // Insert final newlines
+  "files.trimFinalNewlines": true,
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "java.configuration.updateBuildConfiguration": "interactive",
+  "java.compile.nullAnalysis.mode": "automatic" // Trim final newlines
+}

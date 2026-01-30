@@ -11,6 +11,14 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		482D7069C85344CFB3876A1A /* Maison-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 5CFE7044B0AE4B6DAD7506C3 /* Maison-Bold.otf */; };
+		A3371AC2717D4977973E557C /* MaisonMono-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 40814C0607A84033B6A7C271 /* MaisonMono-Light.otf */; };
+		EB09DAD720EA476B8AC9002D /* MaisonMono-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = DCD10053EC174610AD819F42 /* MaisonMono-Bold.otf */; };
+		7F0CE00EB99C41198BEA9936 /* Maison-RegularOblique.otf in Resources */ = {isa = PBXBuildFile; fileRef = A194AC66341C4472A4820C7E /* Maison-RegularOblique.otf */; };
+		F1FBFBF6AF1546C9B3375B0A /* Maison-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 853AA54AF9484F7EB973DE7E /* Maison-Regular.otf */; };
+		67276FEFD8AF4C489D9FEC7F /* Maison-Demi.otf in Resources */ = {isa = PBXBuildFile; fileRef = BD21987662884D919350954C /* Maison-Demi.otf */; };
+		10B35E52C6E847ACA8288B0E /* Maison-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = E08F7186AD3B41A096F65CFE /* Maison-Light.otf */; };
+		F4EB96380A36491D89B4662D /* Maison-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = A6B755CAD9224589A3C80F0D /* Maison-Medium.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +32,14 @@
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = CoachFlow/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = CoachFlow/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		5CFE7044B0AE4B6DAD7506C3 /* Maison-Bold.otf */ = {isa = PBXFileReference; name = "Maison-Bold.otf"; path = "../src/assets/fonts/Maison-Bold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		40814C0607A84033B6A7C271 /* MaisonMono-Light.otf */ = {isa = PBXFileReference; name = "MaisonMono-Light.otf"; path = "../src/assets/fonts/MaisonMono-Light.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		DCD10053EC174610AD819F42 /* MaisonMono-Bold.otf */ = {isa = PBXFileReference; name = "MaisonMono-Bold.otf"; path = "../src/assets/fonts/MaisonMono-Bold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		A194AC66341C4472A4820C7E /* Maison-RegularOblique.otf */ = {isa = PBXFileReference; name = "Maison-RegularOblique.otf"; path = "../src/assets/fonts/Maison-RegularOblique.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		853AA54AF9484F7EB973DE7E /* Maison-Regular.otf */ = {isa = PBXFileReference; name = "Maison-Regular.otf"; path = "../src/assets/fonts/Maison-Regular.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		BD21987662884D919350954C /* Maison-Demi.otf */ = {isa = PBXFileReference; name = "Maison-Demi.otf"; path = "../src/assets/fonts/Maison-Demi.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		E08F7186AD3B41A096F65CFE /* Maison-Light.otf */ = {isa = PBXFileReference; name = "Maison-Light.otf"; path = "../src/assets/fonts/Maison-Light.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		A6B755CAD9224589A3C80F0D /* Maison-Medium.otf */ = {isa = PBXFileReference; name = "Maison-Medium.otf"; path = "../src/assets/fonts/Maison-Medium.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +90,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				932623BADFF64304A4336A2C /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -96,6 +113,22 @@
 			);
 			path = Pods;
 			sourceTree = "<group>";
+		};
+		932623BADFF64304A4336A2C /* Resources */ = {
+			isa = "PBXGroup";
+			children = (
+				5CFE7044B0AE4B6DAD7506C3 /* Maison-Bold.otf */,
+				40814C0607A84033B6A7C271 /* MaisonMono-Light.otf */,
+				DCD10053EC174610AD819F42 /* MaisonMono-Bold.otf */,
+				A194AC66341C4472A4820C7E /* Maison-RegularOblique.otf */,
+				853AA54AF9484F7EB973DE7E /* Maison-Regular.otf */,
+				BD21987662884D919350954C /* Maison-Demi.otf */,
+				E08F7186AD3B41A096F65CFE /* Maison-Light.otf */,
+				A6B755CAD9224589A3C80F0D /* Maison-Medium.otf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+			path = "";
 		};
 /* End PBXGroup section */
 
@@ -159,6 +192,14 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				482D7069C85344CFB3876A1A /* Maison-Bold.otf in Resources */,
+				A3371AC2717D4977973E557C /* MaisonMono-Light.otf in Resources */,
+				EB09DAD720EA476B8AC9002D /* MaisonMono-Bold.otf in Resources */,
+				7F0CE00EB99C41198BEA9936 /* Maison-RegularOblique.otf in Resources */,
+				F1FBFBF6AF1546C9B3375B0A /* Maison-Regular.otf in Resources */,
+				67276FEFD8AF4C489D9FEC7F /* Maison-Demi.otf in Resources */,
+				10B35E52C6E847ACA8288B0E /* Maison-Light.otf in Resources */,
+				F4EB96380A36491D89B4662D /* Maison-Medium.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

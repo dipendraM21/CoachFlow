@@ -46,6 +46,7 @@ Then, and every time you update your native dependencies, run:
 
 ```sh
 bundle exec pod install
+npx react-native run-android
 ```
 
 For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).

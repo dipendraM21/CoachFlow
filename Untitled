@@ -1,0 +1,2 @@
+npm run clean:android
+npm run build:android:dev
