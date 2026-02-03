@@ -22,13 +22,13 @@ export const verifyOtpStyles = StyleSheet.create({
     flexGrow: 1,
     ...globalStyles.justifyContentCenter,
     ...globalStyles.alignItemsCenter,
-    paddingVertical: RFont(60),
-    paddingBottom: RFont(140),
+    paddingVertical: RFont(40), // Reduced from 60
+    paddingBottom: RFont(100), // Reduced from 140
   },
   titleSection: {
     width: '100%',
     ...globalStyles.alignItemsCenter,
-    marginBottom: RFont(56),
+    marginBottom: RFont(40), // Reduced from 56
     paddingHorizontal: RFont(20),
   },
   titleContainer: {
@@ -68,6 +68,14 @@ export const verifyOtpStyles = StyleSheet.create({
     paddingHorizontal: RFont(20),
     marginBottom: RFont(24),
   },
+  errorText: {
+    fontFamily: fontFamily.MaisonRegular,
+    fontSize: RFont(14),
+    color: colors.danger,
+    marginTop: RFont(12),
+    ...globalStyles.textAlignCenter,
+    width: '100%',
+  },
   timerSection: {
     width: '100%',
     ...globalStyles.alignItemsCenter,
@@ -106,7 +114,7 @@ export const verifyOtpStyles = StyleSheet.create({
     paddingTop: RFont(12),
   },
   changeNumberContainer: {
-    marginTop: RFont(24),
+    marginTop: RFont(12),
     ...globalStyles.alignItemsCenter,
     ...globalStyles.justifyContentCenter,
   },

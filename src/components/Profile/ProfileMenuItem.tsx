@@ -14,7 +14,14 @@ interface ProfileMenuItemProps {
 }
 
 export const ProfileMenuItem: React.FC<ProfileMenuItemProps> = React.memo(
-  ({ icon, label, onPress, showChevron = true, textColor = colors.black, isLast = false }) => {
+  ({
+    icon,
+    label,
+    onPress,
+    showChevron = true,
+    textColor = colors.black,
+    isLast = false,
+  }) => {
     return (
       <TouchableOpacity
         style={[styles.container, !isLast && styles.borderBottom]}
@@ -30,7 +37,7 @@ export const ProfileMenuItem: React.FC<ProfileMenuItemProps> = React.memo(
         )}
       </TouchableOpacity>
     );
-  }
+  },
 );
 
 const styles = StyleSheet.create({

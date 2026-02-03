@@ -3,8 +3,8 @@ import React, {
   forwardRef,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useRef,
-  useState,
 } from 'react';
 import {
   NativeSyntheticEvent,
@@ -20,75 +20,99 @@ import { globalStyles } from '../../theme/globalStyles';
 
 const OtpInput = forwardRef<OtpInputRef, OtpInputProps>(
   (
-    { length = 4, onComplete, style, error, onSubmitEditing = () => {} },
+    {
+      length = 4,
+      onComplete,
+      style,
+      error,
+      value = '',
+      onChange,
+      onSubmitEditing = () => {},
+    },
     ref,
   ) => {
-    const [otp, setOtp] = useState<string[]>(new Array(length).fill(''));
+    // Derived state from props
+    const otp = useMemo(() => {
+      const arr = new Array(length).fill('');
+      for (let i = 0; i < length; i++) {
+        arr[i] = value[i] || '';
+      }
+      return arr;
+    }, [value, length]);
+
     const inputRefs = useRef<TextInput[]>([]);
 
-    // {adding the 100ms delay as some some mobile canceling out the keyboard focus on rendering}
     useEffect(() => {
       const timeout = setTimeout(() => {
         inputRefs.current[0]?.focus();
-      }, 100); // delay helps Android reliably open the keyboard
-
+      }, 100);
       return () => clearTimeout(timeout);
     }, []);
-
-    const handleChange = (text: string, index: number) => {
-      const newOtp = [...otp];
-      newOtp[index] = text.slice(-1);
-      setOtp(newOtp);
-
-      const currentOtp = newOtp.join('');
-      onComplete?.(currentOtp);
-      // Move to next input if value entered
-      if (text && index < length - 1) {
-        inputRefs.current[index + 1]?.focus();
-      }
-
-      // Call onComplete when all digits entered
-      // onComplete?.(newOtp.join(''));
-    };
 
     const handleKeyPress = (
       event: NativeSyntheticEvent<TextInputKeyPressEventData>,
       index: number,
     ) => {
-      // Move to previous input on backspace and clear value
       if (event.nativeEvent.key === 'Backspace') {
         const newOtp = [...otp];
 
+        // If current box empty, move back and delete previous
+        // If current box has value, delete it (handled by onChangeText usually, but backspace on empty needs handling)
+
         if (!otp[index] && index > 0) {
-          // If current input is empty, move to previous and clear it
           newOtp[index - 1] = '';
-          setOtp(newOtp);
+          const newValue = newOtp.join('');
+          onChange?.(newValue);
           inputRefs.current[index - 1]?.focus();
-          onComplete?.(newOtp.join(''));
         } else {
-          // Clear current input
-          newOtp[index] = '';
-          setOtp(newOtp);
-          if (index > 0) {
-            inputRefs.current[index - 1]?.focus();
-          }
-          onComplete?.(newOtp.join(''));
+          // Normal backspace on non-empty managed by onChangeText("") logic usually,
+          // but generic text input backspace logic:
+          // If we hit backspace on a filled input, it clears.
+          // If we hit backspace on empty input, it moves back.
         }
+      }
+    };
+
+    // Special case for backspace on filled input to rely on keyPress or onChangeText?
+    // TextInput onChangeText('') is called on backspace if value exists.
+    // If value is empty, only onKeyPress is fired.
+
+    // Let's refine handleChange for empty string (deletion)
+    const handleChangeText = (text: string, index: number) => {
+      const newOtp = [...otp];
+      if (text === '') {
+        // Deletion
+        newOtp[index] = '';
+        const newValue = newOtp.join('');
+        onChange?.(newValue);
+        // Move back? Usually only if empty already?
+        // Standard UX: If I delete a digit, I stay there or move back?
+        // Most OTPs stay. Move back is only on "delete from empty".
+        return;
+      }
+
+      // Insertion
+      newOtp[index] = text.slice(-1);
+      const newValue = newOtp.join('');
+      onChange?.(newValue);
+      if (index < length - 1) {
+        inputRefs.current[index + 1]?.focus();
+      }
+      if (newValue.length === length) {
+        onComplete?.(newValue);
       }
     };
 
     useImperativeHandle(ref, () => ({
       resetOtp: () => {
-        const emptyOtp = Array(length).fill('');
-        setOtp(emptyOtp);
+        // Parent resets value via state, we just focus first
         inputRefs.current[0]?.focus();
-        onComplete?.('');
       },
     }));
 
     return (
       <View style={[globalStyles.row, gapStyles.gap_12, styles.container]}>
-        {otp?.map((digit, index) => (
+        {otp.map((digit, index) => (
           <TextInput
             key={index}
             ref={inputRef => {
@@ -105,13 +129,11 @@ const OtpInput = forwardRef<OtpInputRef, OtpInputProps>(
               style,
             ]}
             value={digit}
-            onChangeText={text => {
-              handleChange(text, index);
-            }}
+            onChangeText={text => handleChangeText(text, index)}
             onSubmitEditing={onSubmitEditing}
             returnKeyType="done"
             onKeyPress={e => handleKeyPress(e, index)}
-            keyboardType="numeric"
+            keyboardType="number-pad"
             maxLength={1}
             selectTextOnFocus
           />

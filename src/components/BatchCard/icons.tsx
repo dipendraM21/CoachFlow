@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import colors from '../../theme/colors';
 import { RFont } from '../../theme/fonts';
 
@@ -97,6 +97,36 @@ export const CompassIcon: React.FC<{ size?: number; color?: string }> = ({
   <View style={iconStyles.container(size)}>
     <View style={iconStyles.compassCircle(size, color)} />
     <View style={iconStyles.compassNeedle(size, color)} />
+  </View>
+);
+
+export const RupeeIcon: React.FC<{ size?: number; color?: string }> = ({
+  size = 14,
+  color = colors.grey_600,
+}) => (
+  <View style={iconStyles.container(size)}>
+    <Text style={iconStyles.rupeeText(size, color)}>₹</Text>
+  </View>
+);
+
+export const InfoIcon: React.FC<{ size?: number; color?: string }> = ({
+  size = 14,
+  color = colors.grey_600,
+}) => (
+  <View style={iconStyles.container(size)}>
+    <View style={iconStyles.infoCircle(size, color)} />
+    <View style={iconStyles.infoDot(size, color)} />
+    <View style={iconStyles.infoStem(size, color)} />
+  </View>
+);
+
+export const MoneyIcon: React.FC<{ size?: number; color?: string }> = ({
+  size = 14,
+  color = colors.grey_600,
+}) => (
+  <View style={iconStyles.container(size)}>
+    <View style={iconStyles.moneyRect(size, color)} />
+    <View style={iconStyles.moneyCircle(size, color)} />
   </View>
 );
 
@@ -277,5 +307,48 @@ const iconStyles = {
     height: RFont(size * 0.5),
     backgroundColor: color,
     transform: [{ rotate: '45deg' }],
+  }),
+  infoCircle: (size: number, color: string) => ({
+    width: RFont(size),
+    height: RFont(size),
+    borderRadius: RFont(size / 2),
+    borderWidth: 1.5,
+    borderColor: color,
+  }),
+  infoDot: (size: number, color: string) => ({
+    position: 'absolute' as const,
+    width: 2,
+    height: 2,
+    backgroundColor: color,
+    top: RFont(size * 0.25),
+    borderRadius: 1,
+  }),
+  infoStem: (size: number, color: string) => ({
+    position: 'absolute' as const,
+    width: 2,
+    height: RFont(size * 0.35),
+    backgroundColor: color,
+    bottom: RFont(size * 0.25),
+    borderRadius: 1,
+  }),
+  moneyRect: (size: number, color: string) => ({
+    width: RFont(size),
+    height: RFont(size * 0.6),
+    borderWidth: 1.5,
+    borderColor: color,
+    borderRadius: 2,
+  }),
+  moneyCircle: (size: number, color: string) => ({
+    position: 'absolute' as const,
+    width: RFont(size * 0.3),
+    height: RFont(size * 0.3),
+    borderWidth: 1.5,
+    borderColor: color,
+    borderRadius: RFont(size * 0.15),
+  }),
+  rupeeText: (size: number, color: string) => ({
+    fontSize: size,
+    color,
+    fontWeight: 'bold' as const,
   }),
 };

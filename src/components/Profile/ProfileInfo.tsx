@@ -8,14 +8,16 @@ interface ProfileInfoProps {
   email: string;
 }
 
-export const ProfileInfo: React.FC<ProfileInfoProps> = React.memo(({ name, email }) => {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.name}>{name}</Text>
-      <Text style={styles.email}>{email}</Text>
-    </View>
-  );
-});
+export const ProfileInfo: React.FC<ProfileInfoProps> = React.memo(
+  ({ name, email }) => {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.name}>{name}</Text>
+        <Text style={styles.email}>{email}</Text>
+      </View>
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   container: {

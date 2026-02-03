@@ -231,7 +231,7 @@ export const TextInputWrapper = ({
 //               ? globalStyles.writingDirectionRight
 //               : globalStyles.writingDirectionLeft,
 //             isRTL ? globalStyles.textRight : globalStyles.textLeft,
-//             fontStyles.Maison_500_16PX_19_2LH,
+//             fontStyles.Inter_500_16PX_19_2LH,
 //             {
 //               color: disabled ? colors.grey_600 : colors.grey_700,
 //               backgroundColor: colors.neutral_white,
@@ -254,7 +254,7 @@ export const TextInputWrapper = ({
 //       {error && touched && (
 //         <Text
 //           style={[
-//             fontStyles.Maison_500_14PX_18LH,
+//             fontStyles.Inter_500_14PX_18LH,
 //             marginStyles.mt_8,
 //             { color: colors.red_500 },
 //           ]}

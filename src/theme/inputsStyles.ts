@@ -20,7 +20,7 @@ const obj: FormInputStylesType = {
     borderRadius: RFont(8),
     borderWidth: 1,
     paddingHorizontal: RFont(16),
-    paddingVertical: Platform.OS == 'ios' ? RFont(10) : RFont(4),
+    paddingVertical: Platform.OS === 'ios' ? RFont(10) : RFont(4),
   },
   dropdown: {
     alignItems: 'center',

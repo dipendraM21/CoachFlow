@@ -166,10 +166,28 @@ export const academyProfileStyles = StyleSheet.create({
     fontSize: RFont(14), // Smaller, uppercase label style
     fontWeight: '700',
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: RFont(40),
+  },
+  errorContainer: {
+    padding: RFont(20),
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: RFont(40),
+  },
   errorText: {
     ...fontStyles.Maison_600_18PX_24LH,
     color: '#0F172A',
     textAlign: 'center',
-    marginTop: RFont(40),
+    marginBottom: RFont(16),
+  },
+  noBatchesText: {
+    ...fontStyles.Maison_600_16PX_20LH,
+    color: '#64748B',
+    textAlign: 'center',
+    marginTop: RFont(20),
   },
 });

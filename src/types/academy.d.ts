@@ -14,3 +14,33 @@ export interface Academy {
   email?: string;
   batches?: Batch[];
 }
+
+export interface ApiInstitute {
+  _id: string;
+  name: string;
+  instituteName?: string;
+  description?: string;
+  logo?: string | null;
+  coverImage?: string | null;
+  address?: {
+    city: string;
+    state: string;
+    fullAddress?: string;
+  };
+  contact?: {
+    phone?: string;
+    email?: string;
+  };
+  rating?: {
+    average: number;
+    count: number;
+  };
+  isVerifiedByAdmin?: boolean;
+}
+
+export interface GetInstituteDetailsResponse {
+  data: {
+    institute: ApiInstitute;
+    batches: import('./batch').ApiBatch[];
+  };
+}

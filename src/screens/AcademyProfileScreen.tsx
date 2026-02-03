@@ -1,36 +1,50 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React, { useCallback, useMemo } from 'react';
-import { FlatList, ListRenderItem, ScrollView, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import React, { useCallback } from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  Linking,
+  ListRenderItem,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { BatchCard } from '../components/BatchCard/BatchCard';
 import { ThemeButton } from '../components/Button/Button';
 import { ScreenHeader } from '../components/Header/ScreenHeader';
-import { GuestStackParamList } from '../navigation/GuestNavigator';
-import { Academy } from '../types/academy';
 import { Batch } from '../types/batch';
+import { GuestStackParamList } from '../types/navigation';
 import { academyProfileStyles } from './AcademyProfileScreen/AcademyProfileScreen.styles';
 import {
-    EmailIcon,
-    LocationIcon,
-    PhoneIcon
+  EmailIcon,
+  LocationIcon,
+  PhoneIcon,
 } from './AcademyProfileScreen/icons';
 
+import { useInstituteDetails } from '../hooks/queries/useBatchDetailsData';
+
 type AcademyProfileRouteParams = {
-  academy: Academy;
+  instituteId: string;
 };
 
 type NavigationProp = NativeStackNavigationProp<GuestStackParamList>;
 
+const ItemSeparator = () => <View style={styles.separator} />;
+
 export const AcademyProfileScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const route = useRoute();
-  const insets = useSafeAreaInsets();
+  const params = route.params as AcademyProfileRouteParams;
+  const instituteId = params?.instituteId;
 
-  const academy = useMemo(() => {
-    const params = route.params as AcademyProfileRouteParams;
-    return params?.academy;
-  }, [route.params]);
+  const {
+    data: academy,
+    isLoading,
+    isError,
+    refetch,
+  } = useInstituteDetails(instituteId);
 
   const handleBack = useCallback(() => {
     navigation.goBack();
@@ -38,15 +52,13 @@ export const AcademyProfileScreen: React.FC = () => {
 
   const handleCall = useCallback(() => {
     if (academy?.phone) {
-      // TODO: Implement call functionality
-      console.log('Call:', academy.phone);
+      Linking.openURL(`tel:${academy.phone}`);
     }
   }, [academy?.phone]);
 
   const handleEmail = useCallback(() => {
     if (academy?.email) {
-      // TODO: Implement email functionality
-      console.log('Email:', academy.email);
+      Linking.openURL(`mailto:${academy.email}`);
     }
   }, [academy?.email]);
 
@@ -54,7 +66,7 @@ export const AcademyProfileScreen: React.FC = () => {
     (batchId: string) => {
       const batch = academy?.batches?.find(b => b.id === batchId);
       if (batch) {
-        navigation.navigate('BatchDetails', { batch });
+        navigation.navigate('BatchDetails', { batchId: batch.id });
       }
     },
     [academy?.batches, navigation],
@@ -67,10 +79,42 @@ export const AcademyProfileScreen: React.FC = () => {
 
   const keyExtractor = useCallback((item: Batch) => item.id, []);
 
+  if (isLoading) {
+    return (
+      <View style={academyProfileStyles.container}>
+        <ScreenHeader title="Institute Details" onBackPress={handleBack} />
+        <View style={academyProfileStyles.loadingContainer}>
+          <ActivityIndicator size="large" color="#FF6B35" />
+        </View>
+      </View>
+    );
+  }
+
+  if (isError) {
+    return (
+      <View style={academyProfileStyles.container}>
+        <ScreenHeader title="Institute Details" onBackPress={handleBack} />
+        <View style={academyProfileStyles.errorContainer}>
+          <Text style={academyProfileStyles.errorText}>
+            Failed to load institute details. Please try again.
+          </Text>
+          <ThemeButton
+            title="Retry"
+            onPress={() => refetch()}
+            style={styles.retryButton}
+          />
+        </View>
+      </View>
+    );
+  }
+
   if (!academy) {
     return (
       <View style={academyProfileStyles.container}>
-        <Text style={academyProfileStyles.errorText}>Academy not found</Text>
+        <ScreenHeader title="Institute Details" onBackPress={handleBack} />
+        <View style={academyProfileStyles.errorContainer}>
+          <Text style={academyProfileStyles.errorText}>Academy not found</Text>
+        </View>
       </View>
     );
   }
@@ -79,11 +123,10 @@ export const AcademyProfileScreen: React.FC = () => {
     <View style={academyProfileStyles.container}>
       {/* Header */}
       <ScreenHeader
-        title={academy.name}
+        title={academy?.name || 'Institute Details'}
         onBackPress={handleBack}
       />
 
-      {/* Scrollable Content */}
       <ScrollView
         style={academyProfileStyles.scrollView}
         contentContainerStyle={academyProfileStyles.scrollContent}
@@ -96,7 +139,9 @@ export const AcademyProfileScreen: React.FC = () => {
             <View style={academyProfileStyles.logoContainer}>
               {academy.logo ? (
                 <View style={academyProfileStyles.logo}>
-                  <Text style={academyProfileStyles.logoText}>Logo</Text>
+                  <Text style={academyProfileStyles.logoText}>
+                    {academy.name.charAt(0).toUpperCase()}
+                  </Text>
                 </View>
               ) : (
                 <View style={academyProfileStyles.logoPlaceholder}>
@@ -113,10 +158,10 @@ export const AcademyProfileScreen: React.FC = () => {
 
             {/* Location Pill */}
             <View style={academyProfileStyles.locationPill}>
-               <LocationIcon size={14} color="#64748B" />
-               <Text style={academyProfileStyles.locationText}>
-                 {academy.location.city}, {academy.location.state}
-               </Text>
+              <LocationIcon size={14} color="#64748B" />
+              <Text style={academyProfileStyles.locationText}>
+                {academy.location.city}, {academy.location.state}
+              </Text>
             </View>
 
             {/* Action Buttons */}
@@ -148,19 +193,37 @@ export const AcademyProfileScreen: React.FC = () => {
         </View>
 
         {/* Recent Batches Section */}
-        {academy.batches && academy.batches.length > 0 && (
+        {academy.batches && academy.batches.length > 0 ? (
           <View style={academyProfileStyles.batchesSection}>
-            <Text style={academyProfileStyles.sectionTitle}>RECENT BATCHES</Text>
+            <Text style={academyProfileStyles.sectionTitle}>
+              RECENT BATCHES
+            </Text>
             <FlatList
               data={academy.batches}
               renderItem={renderBatchItem}
               keyExtractor={keyExtractor}
               scrollEnabled={false}
               showsVerticalScrollIndicator={false}
+              ItemSeparatorComponent={ItemSeparator}
             />
+          </View>
+        ) : (
+          <View style={academyProfileStyles.batchesSection}>
+            <Text style={academyProfileStyles.noBatchesText}>
+              No active batches found.
+            </Text>
           </View>
         )}
       </ScrollView>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  retryButton: {
+    marginTop: 16,
+  },
+  separator: {
+    height: 12,
+  },
+});

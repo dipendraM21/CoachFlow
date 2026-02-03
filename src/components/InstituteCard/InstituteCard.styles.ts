@@ -1,7 +1,6 @@
 import { StyleSheet } from 'react-native';
 import colors from '../../theme/colors';
-import { fontStyles } from '../../theme/fonts';
-import { RFont } from '../../theme/fonts';
+import { fontStyles, RFont } from '../../theme/fonts';
 
 export const instituteCardStyles = StyleSheet.create({
   card: {

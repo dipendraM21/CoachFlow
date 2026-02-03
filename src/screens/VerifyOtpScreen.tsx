@@ -1,12 +1,7 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -16,9 +11,13 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ThemeButton } from '../components/Button/Button';
+// Actually, OtpInput takes error prop.
 import OtpInput from '../components/TextInputField/OtpInput';
-import type { GuestStackParamList } from '../navigation/GuestNavigator';
+import { useAuth } from '../context/AuthContext';
+import { useVerifyOtpMutation } from '../hooks/mutations/useVerifyOtpMutation';
 import { verifyOtpStyles } from '../theme/styles/verifyOtpStyles';
+import { GuestStackParamList } from '../types/navigation';
+import { showError, showSuccess } from '../utils/toast';
 import { translations } from '../utils/translation';
 
 type VerifyOtpScreenNavigationProp = NativeStackNavigationProp<
@@ -30,97 +29,120 @@ type RouteParams = {
   phoneNumber: string;
 };
 
-const OTP_EXPIRY_TIME = 120; // 2 minutes in seconds
+const OTP_EXPIRY_TIME = 300; // 5 minutes in seconds
 
 export const VerifyOtpScreen: React.FC = () => {
   const navigation = useNavigation<VerifyOtpScreenNavigationProp>();
   const route = useRoute();
   const insets = useSafeAreaInsets();
-  const [otp, setOtp] = useState('');
-  const [error, setError] = useState(false);
+
+  // Auth & API
+  const { setAuth } = useAuth();
+  const { mutate: verifyOtp, isPending: isVerifying } = useVerifyOtpMutation();
+
+  // Params
+  const rawPhoneNumber =
+    (route.params as RouteParams)?.phoneNumber || '9876543210';
+
+  // Form Setup
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isValid },
+    reset,
+    setError,
+    clearErrors,
+  } = useForm<{ otp: string }>({
+    defaultValues: { otp: '' },
+    mode: 'onChange',
+  });
+
+  // Timer Setup
   const [timer, setTimer] = useState(OTP_EXPIRY_TIME);
   const [isResendEnabled, setIsResendEnabled] = useState(false);
   const otpInputRef = useRef<{ resetOtp: () => void } | null>(null);
-  const timerIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const phoneNumber =
-    (route.params as RouteParams)?.phoneNumber || '9876543211';
-
-  const handleOtpComplete = useCallback((value: string) => {
-    setOtp(value);
-    setError(false);
-  }, []);
-
-  const handleVerify = useCallback(() => {
-    if (otp.length !== 4) {
-      setError(true);
-      return;
-    }
-    // Handle OTP verification
-    console.log('Verifying OTP:', otp);
-    // TODO: Add actual OTP verification API call here
-    // On success, navigate to SetupProfile
-    navigation.navigate('SetupProfile');
-  }, [otp, navigation]);
-
-  const handleChangeNumber = useCallback(() => {
-    navigation.goBack();
-  }, [navigation]);
-
-  const handleResendCode = useCallback(() => {
-    if (!isResendEnabled) {
-      return;
-    }
-    // Reset timer
-    setTimer(OTP_EXPIRY_TIME);
-    setIsResendEnabled(false);
-    // Reset OTP input
-    otpInputRef.current?.resetOtp();
-    setOtp('');
-    setError(false);
-    // Handle resend OTP API call
-    console.log('Resending OTP to:', phoneNumber);
-    // TODO: Call your resend OTP API here
-  }, [isResendEnabled, phoneNumber]);
-
-  // Timer countdown effect
   useEffect(() => {
-    // Clear any existing interval
-    if (timerIntervalRef.current) {
-      clearInterval(timerIntervalRef.current);
-      timerIntervalRef.current = null;
-    }
-
-    // Only start timer if it's greater than 0 and resend is not enabled
-    if (timer > 0 && !isResendEnabled) {
-      timerIntervalRef.current = setInterval(() => {
-        setTimer(prevTimer => {
-          const newTimer = prevTimer - 1;
-          if (newTimer <= 0) {
+    let interval: ReturnType<typeof setInterval>;
+    if (!isResendEnabled && timer > 0) {
+      interval = setInterval(() => {
+        setTimer(prev => {
+          if (prev <= 1) {
             setIsResendEnabled(true);
+            clearInterval(interval);
             return 0;
           }
-          return newTimer;
+          return prev - 1;
         });
       }, 1000);
     }
-
     return () => {
-      if (timerIntervalRef.current) {
-        clearInterval(timerIntervalRef.current);
-        timerIntervalRef.current = null;
-      }
+      if (interval) clearInterval(interval);
     };
-  }, [timer, isResendEnabled]);
+  }, [isResendEnabled, timer]); // Simplified dependency
 
+  // Handlers
+  const onSubmit = (data: { otp: string }) => {
+    verifyOtp(
+      {
+        phone: rawPhoneNumber,
+        otp: data.otp,
+      },
+      {
+        onSuccess: async response => {
+          const { token, isNewUser } = response.data;
+          await setAuth(token, isNewUser);
+          // Auto-navigation by AppNavigator
+          showSuccess('Phone number verified successfully');
+        },
+        onError: (err: unknown) => {
+          const error = err as {
+            response?: { data?: { message?: string }; status?: number };
+            message?: string;
+          };
+          const backendMessage = error.response?.data?.message;
+          const status = error.response?.status;
+
+          // Strict Logic: 400 Bad Request usually means Invalid OTP
+          if (backendMessage && status === 400) {
+            setError('otp', { type: 'server', message: backendMessage });
+          } else {
+            const msg =
+              backendMessage || error.message || 'Verification failed';
+            showError(msg);
+          }
+        },
+      },
+    );
+  };
+
+  const handleResendCode = () => {
+    // 1. Reset UI
+    reset({ otp: '' });
+    clearErrors();
+    setTimer(OTP_EXPIRY_TIME);
+    setIsResendEnabled(false);
+    otpInputRef.current?.resetOtp();
+
+    showSuccess('OTP sent successfully');
+  };
+
+  const handleChangeNumber = () => {
+    navigation.navigate('Login', { phoneNumber: rawPhoneNumber });
+  };
+
+  // derived values
   const formattedPhoneNumber = useMemo(() => {
-    const cleaned = phoneNumber.replace(/\D/g, '');
-    // Format for better display: show last few digits
+    const cleaned = rawPhoneNumber.replace(/\D/g, '');
     if (cleaned.length > 2) {
-      return cleaned.slice(-2);
+      if (cleaned.length >= 10) {
+        const last10 = cleaned.slice(-10);
+        return `+91 ${last10.slice(0, 5)} ${last10.slice(5)}`;
+      }
+      return cleaned;
     }
-    return cleaned;
-  }, [phoneNumber]);
+    return rawPhoneNumber;
+  }, [rawPhoneNumber]);
 
   const contentPadding = useMemo(
     () => ({
@@ -135,7 +157,6 @@ export const VerifyOtpScreen: React.FC = () => {
       <KeyboardAvoidingView
         style={verifyOtpStyles.keyboardAvoidingView}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
       >
         <View style={[verifyOtpStyles.content, contentPadding]}>
           <ScrollView
@@ -143,10 +164,8 @@ export const VerifyOtpScreen: React.FC = () => {
             contentContainerStyle={verifyOtpStyles.scrollContent}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
-            bounces={false}
-            keyboardDismissMode="on-drag"
           >
-            {/* Title Section with Enhanced Styling */}
+            {/* Title Section */}
             <View style={verifyOtpStyles.titleSection}>
               <View style={verifyOtpStyles.titleContainer}>
                 <Text style={verifyOtpStyles.title}>
@@ -162,14 +181,43 @@ export const VerifyOtpScreen: React.FC = () => {
               </Text>
             </View>
 
-            {/* OTP Input Section */}
+            {/* OTP Input Section (Controlled) */}
             <View style={verifyOtpStyles.otpSection}>
-              <OtpInput
-                ref={otpInputRef}
-                length={4}
-                onComplete={handleOtpComplete}
-                error={error}
+              <Controller
+                control={control}
+                name="otp"
+                rules={{
+                  required: 'OTP is required',
+                  minLength: {
+                    value: 4,
+                    message: 'Enter valid 4-digit OTP',
+                  },
+                  maxLength: {
+                    value: 4,
+                    message: 'Enter valid 4-digit OTP',
+                  },
+                  pattern: {
+                    value: /^[0-9]{4}$/,
+                    message: 'Invalid OTP',
+                  },
+                }}
+                render={({ field: { onChange, value } }) => (
+                  <OtpInput
+                    ref={otpInputRef}
+                    length={4}
+                    value={value}
+                    onChange={onChange}
+                    onComplete={() => {}} // Could submit automatically if desired
+                    error={!!errors.otp}
+                  />
+                )}
               />
+
+              {errors.otp ? (
+                <Text style={verifyOtpStyles.errorText}>
+                  {errors.otp.message}
+                </Text>
+              ) : null}
             </View>
 
             {/* Timer and Resend Section */}
@@ -199,8 +247,9 @@ export const VerifyOtpScreen: React.FC = () => {
           <View style={verifyOtpStyles.buttonContainer}>
             <ThemeButton
               title={translations.VERIFY_AND_CONTINUE}
-              onPress={handleVerify}
-              disabled={otp.length !== 4}
+              onPress={handleSubmit(onSubmit)}
+              disabled={!isValid || isVerifying}
+              isLoading={isVerifying}
               fullWidth
             />
             <View style={verifyOtpStyles.changeNumberContainer}>

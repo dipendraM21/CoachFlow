@@ -47,15 +47,31 @@ export const ProfileIcon: React.FC<TabIconProps> = ({ color, size = 24 }) => (
       strokeLinecap="round"
       strokeLinejoin="round"
     />
-    <Circle cx="12" cy="7" r="4" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <Circle
+      cx="12"
+      cy="7"
+      r="4"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </Svg>
 );
 
 export const ReportsIcon: React.FC<TabIconProps> = ({ color, size = 24 }) => (
-   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <Rect x="3" y="3" width="18" height="18" rx="2" stroke={color} strokeWidth="2" />
-      <Path d="M8 17V13" stroke={color} strokeWidth="2" strokeLinecap="round" />
-      <Path d="M12 17V10" stroke={color} strokeWidth="2" strokeLinecap="round" />
-      <Path d="M16 17V7" stroke={color} strokeWidth="2" strokeLinecap="round" />
-   </Svg>
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Rect
+      x="3"
+      y="3"
+      width="18"
+      height="18"
+      rx="2"
+      stroke={color}
+      strokeWidth="2"
+    />
+    <Path d="M8 17V13" stroke={color} strokeWidth="2" strokeLinecap="round" />
+    <Path d="M12 17V10" stroke={color} strokeWidth="2" strokeLinecap="round" />
+    <Path d="M16 17V7" stroke={color} strokeWidth="2" strokeLinecap="round" />
+  </Svg>
 );

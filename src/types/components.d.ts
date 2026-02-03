@@ -217,6 +217,8 @@ declare module 'component-props' {
     style?: StyleProp<TextStyle>[];
     error?: boolean;
     onSubmitEditing?: () => void;
+    value?: string; // Controlled value
+    onChange?: (value: string) => void; // Controlled change handler
   }
 
   export interface FormInputProps {
@@ -673,7 +675,7 @@ declare module 'component-props' {
   }
   interface TabsProps {
     tabs: TabsData[];
-    // eslint-disable-next-line
+
     onTabChange: (data: TabsData[]) => void;
   }
   interface MealTypeLabelProps {
@@ -751,6 +753,7 @@ declare module 'component-props' {
     open: boolean;
     loaderText?: string;
     id: string;
+    B;
     close: () => void;
   }
 

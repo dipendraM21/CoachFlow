@@ -9,23 +9,29 @@ interface ProfileAvatarProps {
   onEditPress: () => void;
 }
 
-export const ProfileAvatar: React.FC<ProfileAvatarProps> = React.memo(({ imageUri, onEditPress }) => {
-  return (
-    <TouchableOpacity onPress={onEditPress} activeOpacity={0.8} style={styles.avatarContainer}>
-      {imageUri ? (
-        <Image source={{ uri: imageUri }} style={styles.image} />
-      ) : (
-        <Image
-          source={{ uri: 'https://avatar.iran.liara.run/public' }}
-          style={styles.image}
-        />
-      )}
-      <View style={styles.cameraButton}>
-        <CameraIcon size={14} color={colors.white} />
-      </View>
-    </TouchableOpacity>
-  );
-});
+export const ProfileAvatar: React.FC<ProfileAvatarProps> = React.memo(
+  ({ imageUri, onEditPress }) => {
+    return (
+      <TouchableOpacity
+        onPress={onEditPress}
+        activeOpacity={0.8}
+        style={styles.avatarContainer}
+      >
+        {imageUri ? (
+          <Image source={{ uri: imageUri }} style={styles.image} />
+        ) : (
+          <Image
+            source={{ uri: 'https://avatar.iran.liara.run/public' }}
+            style={styles.image}
+          />
+        )}
+        <View style={styles.cameraButton}>
+          <CameraIcon size={14} color={colors.white} />
+        </View>
+      </TouchableOpacity>
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   avatarContainer: {

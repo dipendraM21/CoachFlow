@@ -1,21 +1,22 @@
 import React, {
-    useCallback,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
 } from 'react';
 import {
-    ActivityIndicator,
-    Animated,
-    Easing,
-    StyleSheet,
-    Text,
-    TextStyle,
-    TouchableOpacity,
-    TouchableOpacityProps,
-    View,
-    ViewStyle,
+  ActivityIndicator,
+  Animated,
+  Easing,
+  GestureResponderEvent,
+  StyleSheet,
+  Text,
+  TextStyle,
+  TouchableOpacity,
+  TouchableOpacityProps,
+  View,
+  ViewStyle,
 } from 'react-native';
 import colors from '../../theme/colors';
 import { fontFamily, RFont } from '../../theme/fonts';
@@ -410,7 +411,7 @@ export const ThemeButton: React.FC<ButtonProps> = React.memo(
 
     // Handle press events
     const handlePress = useCallback(
-      (event: any) => {
+      (event: GestureResponderEvent) => {
         if (onPress && !disabled && !isLoading) {
           onPress(event);
         }

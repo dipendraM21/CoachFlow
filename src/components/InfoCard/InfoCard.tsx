@@ -7,10 +7,11 @@ interface InfoCardProps {
   label: string;
   value: string;
   fullWidth?: boolean;
+  valueStyle?: object;
 }
 
 export const InfoCard: React.FC<InfoCardProps> = React.memo(
-  ({ icon, label, value, fullWidth = false }) => {
+  ({ icon, label, value, fullWidth = false, valueStyle }) => {
     return (
       <View
         style={[infoCardStyles.card, fullWidth && infoCardStyles.fullWidth]}
@@ -19,7 +20,14 @@ export const InfoCard: React.FC<InfoCardProps> = React.memo(
           <View style={infoCardStyles.iconContainer}>{icon}</View>
           <Text style={infoCardStyles.label}>{label}</Text>
         </View>
-        <Text style={infoCardStyles.value}>{value}</Text>
+        <Text
+          style={[infoCardStyles.value, valueStyle]}
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          minimumFontScale={0.8}
+        >
+          {value}
+        </Text>
       </View>
     );
   },

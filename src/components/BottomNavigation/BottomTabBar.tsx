@@ -11,10 +11,13 @@ interface BottomTabBarProps {
   onTabPress: (tab: TabType) => void;
 }
 
-const TABS: { id: TabType; label: string; icon: any }[] = [
+const TABS: {
+  id: TabType;
+  label: string;
+  icon: React.FC<{ color: string; size: number }>;
+}[] = [
   { id: 'Home', label: 'Home', icon: HomeIcon },
   { id: 'Batches', label: 'Batches', icon: BatchesIcon },
-  // { id: 'Reports', label: 'Reports', icon: ReportsIcon }, // Hidden per requirements
   { id: 'Profile', label: 'Profile', icon: ProfileIcon },
 ];
 
@@ -25,19 +28,14 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
   const insets = useSafeAreaInsets();
 
   return (
-    <View style={[styles.container, { paddingBottom: insets.bottom + RFont(8) }]}>
-      {TABS.map((tab) => {
+    <View
+      style={[styles.container, { paddingBottom: insets.bottom + RFont(8) }]}
+    >
+      {TABS.map(tab => {
         const isActive = activeTab === tab.id;
         const IconComponent = tab.icon;
-
-        // Active Color: Primary Brand Color (using colors.black/primary or custom blue from image)
-        // Image shows: Blue for active, Grey for inactive.
-        // Let's use the same blue used in Profile Screen Refactor: #1D4ED8 (Blue-700) or colors.info
-        // Or strictly strictly black if that's the "Brand". The user said "primary brand color".
-        // App seems to use Blue/Purple/Orange acc. to Batches.
-        // Let's use a safe blue similar to the image provided in this turn: #3b82f6 approx.
         const activeColor = '#1D4ED8';
-        const inactiveColor = '#94A3B8'; // Slate-400
+        const inactiveColor = '#94A3B8';
 
         return (
           <TouchableOpacity
@@ -47,8 +45,8 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
             activeOpacity={0.7}
           >
             <IconComponent
-                color={isActive ? activeColor : inactiveColor}
-                size={24}
+              color={isActive ? activeColor : inactiveColor}
+              size={24}
             />
             <Text
               style={[

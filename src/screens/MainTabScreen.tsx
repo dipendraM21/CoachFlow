@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { BottomTabBar, TabType } from '../components/BottomNavigation/BottomTabBar';
+import {
+  BottomTabBar,
+  TabType,
+} from '../components/BottomNavigation/BottomTabBar';
 import colors from '../theme/colors';
 import { BatchesListingScreen } from './BatchesListingScreen';
-import { SetupProfileScreen } from './SetupProfileScreen';
+import { ProfileScreen } from './ProfileScreen';
 
 export const MainTabScreen: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>('Batches');
@@ -11,14 +14,12 @@ export const MainTabScreen: React.FC = () => {
   const renderContent = () => {
     switch (activeTab) {
       case 'Home':
-        // Currently reusing BatchesListing for Home as per plan (Dashboard not ready)
-        // Or if we need a distinct "Home" feel we can pass a prop or use a different screen.
-        // For now, reusing BatchesListingScreen seems safest to keep flow "real".
+        // Reuse BatchesListing for Home for now
         return <BatchesListingScreen />;
       case 'Batches':
         return <BatchesListingScreen />;
       case 'Profile':
-        return <SetupProfileScreen />;
+        return <ProfileScreen />;
       default:
         return <BatchesListingScreen />;
     }
@@ -26,9 +27,7 @@ export const MainTabScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.content}>
-        {renderContent()}
-      </View>
+      <View style={styles.content}>{renderContent()}</View>
       <BottomTabBar activeTab={activeTab} onTabPress={setActiveTab} />
     </View>
   );

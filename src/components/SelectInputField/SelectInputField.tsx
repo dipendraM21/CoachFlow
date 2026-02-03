@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { Platform, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  TextStyle,
+  View,
+  ViewStyle,
+} from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import colors from '../../theme/colors';
 import { fontFamily, RFont } from '../../theme/fonts';
@@ -8,11 +15,11 @@ import { globalStyles } from '../../theme/globalStyles';
 export interface SelectInputProps {
   header?: string;
   placeholder?: string;
-  options: any[];
+  options: Record<string, unknown>[];
   labelField?: string;
   valueField?: string;
   value?: string | number;
-  onChange: (value: any) => void;
+  onChange: (value: string | number) => void;
   disabled?: boolean;
   error?: string;
   touched?: boolean;
@@ -22,18 +29,25 @@ export interface SelectInputProps {
   headerStyle?: TextStyle;
 }
 
-const Chevron = ({ color, size, rotate }: { color: string; size: number; rotate?: string }) => (
+const Chevron = ({
+  color,
+  size,
+  rotate,
+}: {
+  color: string;
+  size: number;
+  rotate?: string;
+}) => (
   <View
-    style={{
-      width: size,
-      height: size,
-      borderBottomWidth: 2,
-      borderRightWidth: 2,
-      borderColor: color,
-      transform: [{ rotate: rotate || '45deg' }],
-      marginRight: 4,
-      marginBottom: 2, // Visual adjustment
-    }}
+    style={[
+      styles.chevron,
+      {
+        width: size,
+        height: size,
+        borderColor: color,
+        transform: [{ rotate: rotate || '45deg' }],
+      },
+    ]}
   />
 );
 
@@ -50,13 +64,13 @@ const SelectInputField: React.FC<SelectInputProps> = ({
   error,
   style,
   containerStyle,
-  touched = false,
 }) => {
   const [isFocus, setIsFocus] = useState(false);
 
   // Calculate border color based on state
   const getBorderColor = () => {
-    if (error) { // Simplified logic: if error exists, show red.
+    if (error) {
+      // Simplified logic: if error exists, show red.
       return colors.danger;
     }
     if (isFocus) {
@@ -67,11 +81,7 @@ const SelectInputField: React.FC<SelectInputProps> = ({
 
   return (
     <View style={[styles.container, containerStyle]}>
-      {header && (
-        <Text style={[styles.label, headerStyle]}>
-          {header}
-        </Text>
-      )}
+      {header && <Text style={[styles.label, headerStyle]}>{header}</Text>}
       <Dropdown
         mode="modal"
         disable={disabled}
@@ -107,18 +117,14 @@ const SelectInputField: React.FC<SelectInputProps> = ({
           setIsFocus(false);
         }}
         renderRightIcon={() => (
-           <Chevron
-             color={isFocus ? colors.black : colors.gray}
-             size={RFont(10)}
-             rotate={isFocus ? '225deg' : '45deg'} // Rotate chevron on focus
-           />
+          <Chevron
+            color={isFocus ? colors.black : colors.gray}
+            size={RFont(10)}
+            rotate={isFocus ? '225deg' : '45deg'} // Rotate chevron on focus
+          />
         )}
       />
-      {error && (
-        <Text style={styles.errorText}>
-          {error}
-        </Text>
-      )}
+      {error && <Text style={styles.errorText}>{error}</Text>}
     </View>
   );
 };
@@ -201,6 +207,12 @@ const styles = StyleSheet.create({
     fontSize: RFont(12),
     color: colors.danger,
     marginTop: 4,
+  },
+  chevron: {
+    borderBottomWidth: 2,
+    borderRightWidth: 2,
+    marginRight: 4,
+    marginBottom: 2,
   },
 });
 

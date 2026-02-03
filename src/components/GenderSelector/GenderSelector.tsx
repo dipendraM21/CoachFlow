@@ -11,56 +11,54 @@ interface GenderSelectorProps {
   error?: string;
 }
 
-export const GenderSelector = React.memo<GenderSelectorProps>(({
-  value,
-  onChange,
-  error,
-}) => {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.label}>Gender</Text>
-      <View style={styles.optionsContainer}>
-        <TouchableOpacity
-          style={[
-            styles.option,
-            value === 'male' && styles.optionSelected,
-            error && styles.optionError,
-          ]}
-          onPress={() => onChange('male')}
-          activeOpacity={0.7}
-        >
-          <Text
+export const GenderSelector = React.memo<GenderSelectorProps>(
+  ({ value, onChange, error }) => {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.label}>Gender</Text>
+        <View style={styles.optionsContainer}>
+          <TouchableOpacity
             style={[
-              styles.optionText,
-              value === 'male' && styles.optionTextSelected,
+              styles.option,
+              value === 'male' && styles.optionSelected,
+              error && styles.optionError,
             ]}
+            onPress={() => onChange('male')}
+            activeOpacity={0.7}
           >
-            Male
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.option,
-            value === 'female' && styles.optionSelected,
-            error && styles.optionError,
-          ]}
-          onPress={() => onChange('female')}
-          activeOpacity={0.7}
-        >
-          <Text
+            <Text
+              style={[
+                styles.optionText,
+                value === 'male' && styles.optionTextSelected,
+              ]}
+            >
+              Male
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
             style={[
-              styles.optionText,
-              value === 'female' && styles.optionTextSelected,
+              styles.option,
+              value === 'female' && styles.optionSelected,
+              error && styles.optionError,
             ]}
+            onPress={() => onChange('female')}
+            activeOpacity={0.7}
           >
-            Female
-          </Text>
-        </TouchableOpacity>
+            <Text
+              style={[
+                styles.optionText,
+                value === 'female' && styles.optionTextSelected,
+              ]}
+            >
+              Female
+            </Text>
+          </TouchableOpacity>
+        </View>
+        {error && <Text style={styles.errorText}>{error}</Text>}
       </View>
-      {error && <Text style={styles.errorText}>{error}</Text>}
-    </View>
-  );
-});
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   container: {

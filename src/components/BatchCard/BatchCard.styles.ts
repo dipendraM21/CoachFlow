@@ -1,42 +1,42 @@
 import { StyleSheet } from 'react-native';
-import colors from '../../theme/colors';
-import { fontStyles, RFont } from '../../theme/fonts';
+import { fontFamily, fontStyles, RFont } from '../../theme/fonts';
 
 export const batchCardStyles = StyleSheet.create({
   card: {
-    backgroundColor: colors.white,
-    borderRadius: RFont(24),
-    marginBottom: 0, // Removed margin, letting gap handle spacing
-    shadowColor: '#64748B',
-    shadowOffset: { width: 0, height: RFont(4) },
-    shadowOpacity: 0.08,
-    shadowRadius: RFont(16),
-    elevation: 3,
+    backgroundColor: '#FFFFFF',
+    borderRadius: RFont(12),
+    // Removed marginBottom to let list handle gap or reduce it manually
     borderWidth: 1,
-    borderColor: '#F1F5F9',
+    borderColor: '#E2E8F0',
+    // Subtle shadow for lift
+    shadowColor: '#64748B',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 2,
+    elevation: 1,
     overflow: 'hidden',
   },
   mainContent: {
-    padding: RFont(16), // Reduced from 20
-    paddingBottom: RFont(12), // Reduced from 16
+    padding: RFont(12), // Reduced from 14 for compact look
+    paddingBottom: RFont(12),
   },
   // Header
   headerRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
-    marginBottom: RFont(12), // Reduced from 16
+    marginBottom: RFont(10), // Reduced from 16
   },
   headerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
-    gap: RFont(10), // Reduced from 12
+    gap: RFont(10),
   },
   instituteIconContainer: {
-    width: RFont(40), // Reduced from 48
-    height: RFont(40), // Reduced from 48
-    borderRadius: RFont(12), // Adjusted radius
+    width: RFont(36), // Reduced from 48
+    height: RFont(36), // Reduced from 48
+    borderRadius: RFont(10),
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -45,75 +45,128 @@ export const batchCardStyles = StyleSheet.create({
   },
   instituteName: {
     ...fontStyles.Maison_700_16PX_22LH,
-    fontSize: RFont(15), // Reduced from 16
-    color: '#0F172A',
-    marginBottom: RFont(0), // Removed margin
+    fontFamily: fontFamily.MaisonBold,
+    fontSize: RFont(18),
+    color: '#0F172A', // Darker
+    marginBottom: RFont(0),
+    flexShrink: 1,
+  },
+  verifiedBadge: {
+    width: RFont(18),
+    height: RFont(18),
+    marginTop: RFont(4),
+    resizeMode: 'contain',
   },
   instituteLocation: {
     ...fontStyles.Maison_400_12PX_16LH,
+    fontFamily: fontFamily.MaisonRegular,
     color: '#64748B',
-    fontSize: RFont(12), // Reduced from 13
+    fontSize: RFont(12),
+    marginTop: RFont(0),
+  },
+  shortDescription: {
+    ...fontStyles.Maison_400_12PX_16LH,
+    fontFamily: fontFamily.MaisonRegular,
+    color: '#64748B',
+    fontSize: RFont(12),
+    marginTop: RFont(6),
+  },
+  instituteNameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: RFont(4),
   },
   bookmarkButton: {
     padding: RFont(4),
   },
   // Title & Badge
   titleSection: {
-    marginBottom: RFont(12), // Reduced from 20
+    marginBottom: RFont(10), // Reduced from 16
   },
   batchTitle: {
     ...fontStyles.Maison_600_20PX_28LH,
-    fontSize: RFont(17), // Reduced from 18
-    lineHeight: RFont(24), // Reduced from 26
+    fontSize: RFont(15), // Reduced from 16
+    fontFamily: fontFamily.MaisonDemi,
     color: '#0F172A',
-    marginBottom: RFont(6), // Reduced from 8
+    marginBottom: RFont(6),
+    lineHeight: RFont(20),
   },
+  // Replaced badgeContainer with chipsContainer logic if needed,
+  // but keeping basic structure for chips.
+  chipsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: RFont(8),
+    marginBottom: RFont(4),
+  },
+  chipContainer: {
+    backgroundColor: '#F1F5F9', // Slightly darker than #EEF2F7 for better contrast white card
+    paddingHorizontal: RFont(8), // Compact
+    paddingVertical: RFont(2),
+    borderRadius: RFont(4), // Square-ish rounded
+  },
+  chipText: {
+    ...fontStyles.Maison_500_12PX_14_4LH,
+    fontFamily: fontFamily.MaisonMedium,
+    fontSize: RFont(11), // Tiny chips
+    color: '#475569',
+  },
+  // Deprecated badge classes if unused, but keeping just in case
   badgeContainer: {
-    alignSelf: 'flex-start',
-    backgroundColor: '#F8FAFC',
-    paddingHorizontal: RFont(8),
+    backgroundColor: '#EEF2F7',
+    paddingHorizontal: RFont(12),
     paddingVertical: RFont(4),
-    borderRadius: RFont(6),
-    borderWidth: 1,
-    borderColor: '#F1F5F9',
+    borderRadius: RFont(20),
+    alignSelf: 'flex-start',
   },
   badgeText: {
-    ...fontStyles.Maison_500_12PX_16LH,
-    color: '#64748B',
-    fontSize: RFont(11), // Reduced from 12
+    ...fontStyles.Maison_500_12PX_14_4LH,
+    fontFamily: fontFamily.MaisonMedium,
+    fontSize: RFont(12),
+    color: '#475569',
   },
   // Grid
   gridContainer: {
-    gap: RFont(12), // Reduced from 20
-    marginBottom: RFont(12), // Reduced from 20
+    marginTop: RFont(2),
+    marginBottom: RFont(10),
+    backgroundColor: '#F8FAFC', // Overall background for grid block
+    borderRadius: RFont(8),
+    padding: RFont(12),
   },
   gridRow: {
     flexDirection: 'row',
-    gap: RFont(16),
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  gridRowSpaced: {
+    marginTop: RFont(12),
   },
   gridItem: {
     flex: 1,
+    alignItems: 'flex-start', // User requested start alignment
+    paddingHorizontal: RFont(4),
   },
-  gridLabelRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: RFont(6),
-    marginBottom: RFont(4), // Reduced from 6
+  gridBorderLeft: {
+    // No longer used in 2x2
   },
+  gridLastItem: {
+    // No longer used
+  },
+  gridLabelRow: {},
   gridLabel: {
-    ...fontStyles.Maison_600_10PX_12LH,
-    fontSize: RFont(9), // Reduced from 10
-    color: '#94A3B8',
-    letterSpacing: 0.5,
+    ...fontStyles.Maison_500_10PX_13LH,
+    fontFamily: fontFamily.MaisonMedium,
+    fontSize: RFont(10),
+    color: '#64748B',
     textTransform: 'uppercase',
-    fontWeight: '600',
+    letterSpacing: 0.5,
   },
   gridValue: {
-    ...fontStyles.Maison_600_14PX_18LH,
-    fontSize: RFont(13), // Reduced from 14
-    color: '#1E293B',
-    lineHeight: RFont(18),
-    fontWeight: '600',
+    ...fontStyles.Maison_600_16PX_20LH,
+    fontFamily: fontFamily.MaisonDemi,
+    fontSize: RFont(13),
+    color: '#0F172A',
+    marginTop: RFont(0),
   },
   // Footer
   footer: {
@@ -125,41 +178,41 @@ export const batchCardStyles = StyleSheet.create({
   statusChip: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: RFont(10), // Reduced from 12
-    paddingVertical: RFont(4), // Reduced from 6
-    borderRadius: RFont(100),
+    paddingHorizontal: RFont(10),
+    paddingVertical: RFont(6),
+    borderRadius: RFont(6),
     gap: RFont(6),
   },
   statusSuccess: {
-    backgroundColor: '#ECFDF5',
-  },
-  statusWarning: {
-    backgroundColor: '#FFFBEB',
-  },
-  statusDot: {
-    width: RFont(6),
-    height: RFont(6),
-    borderRadius: RFont(3),
+    backgroundColor: '#F0FDF4',
   },
   statusText: {
     ...fontStyles.Maison_600_12PX_16LH,
+    fontFamily: fontFamily.MaisonDemi, // SemiBold
     fontSize: RFont(12),
-    fontWeight: '700',
+    color: '#22C55E',
+  },
+  statusDot: {
+    // Optional dot
+    width: RFont(6),
+    height: RFont(6),
+    borderRadius: RFont(3),
+    backgroundColor: '#22C55E',
   },
   viewDetailsButton: {
-    paddingVertical: RFont(8),
-    paddingHorizontal: RFont(16),
-    borderRadius: RFont(100),
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    backgroundColor: '#FFFFFF',
+    paddingVertical: RFont(10),
+    paddingHorizontal: RFont(20), // Wider for pill look
+    borderRadius: RFont(24), // Pill shape
+    backgroundColor: '#0F172A',
+    // No shadow
+    elevation: 0,
   },
   viewDetailsText: {
     ...fontStyles.Maison_600_14PX_18LH,
-    fontSize: RFont(12),
-    color: '#0F172A',
-    letterSpacing: 0.5,
+    fontFamily: fontFamily.MaisonDemi, // SemiBold
+    fontSize: RFont(12), // Smaller
+    color: '#FFFFFF',
     textTransform: 'uppercase',
-    fontWeight: '700',
+    letterSpacing: 0.5,
   },
 });

@@ -1,6 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { StatusBar, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
+import {
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
 import colors from '../../theme/colors';
@@ -28,79 +35,77 @@ const BackIcon = ({ color }: { color: string }) => (
   </Svg>
 );
 
-export const ScreenHeader: React.FC<ScreenHeaderProps> = React.memo(({
-  title,
-  showBackButton = true,
-  onBackPress,
-  rightAction,
-  style,
-  backgroundColor = colors.backgroundLight, // Default background
-  darkContent = true,
-}) => {
-  const insets = useSafeAreaInsets();
-  const navigation = useNavigation();
+export const ScreenHeader: React.FC<ScreenHeaderProps> = React.memo(
+  ({
+    title,
+    showBackButton = true,
+    onBackPress,
+    rightAction,
+    style,
+    backgroundColor = colors.backgroundLight, // Default background
+    darkContent = true,
+  }) => {
+    const insets = useSafeAreaInsets();
+    const navigation = useNavigation();
 
-  const handleBack = () => {
-    if (onBackPress) {
-      onBackPress();
-    } else {
-      navigation.goBack();
-    }
-  };
+    const handleBack = () => {
+      if (onBackPress) {
+        onBackPress();
+      } else {
+        navigation.goBack();
+      }
+    };
 
-  return (
-    <View
-      style={[
-        styles.container,
-        {
-          paddingTop: insets.top + RFont(12), // Safe area + breathing room (mt)
-          backgroundColor: backgroundColor,
-        },
-        style,
-      ]}
-    >
-      <StatusBar
-        barStyle={darkContent ? 'dark-content' : 'light-content'}
-        backgroundColor="transparent"
-        translucent
-      />
+    return (
+      <View
+        style={[
+          styles.container,
+          {
+            paddingTop: insets.top + RFont(12), // Safe area + breathing room (mt)
+            backgroundColor: backgroundColor,
+          },
+          style,
+        ]}
+      >
+        <StatusBar
+          barStyle={darkContent ? 'dark-content' : 'light-content'}
+          backgroundColor="transparent"
+          translucent
+        />
 
-      {/* Left Section (Back Button or Spacer) */}
-      <View style={styles.leftContainer}>
-        {showBackButton ? (
-          <TouchableOpacity
-            onPress={handleBack}
-            style={styles.backButton}
-            activeOpacity={0.7}
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-          >
-            <BackIcon color={colors.black} />
-          </TouchableOpacity>
-        ) : (
-          <View style={styles.placeholder} />
-        )}
+        {/* Left Section (Back Button or Spacer) */}
+        <View style={styles.leftContainer}>
+          {showBackButton ? (
+            <TouchableOpacity
+              onPress={handleBack}
+              style={styles.backButton}
+              activeOpacity={0.7}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            >
+              <BackIcon color={colors.black} />
+            </TouchableOpacity>
+          ) : (
+            <View style={styles.placeholder} />
+          )}
+        </View>
+
+        {/* Center Section (Title) */}
+        <View style={styles.titleContainer}>
+          {title && (
+            <Text style={styles.title} numberOfLines={1}>
+              {title}
+            </Text>
+          )}
+        </View>
+
+        {/* Right Section (Action or Spacer) */}
+        <View style={styles.rightContainer}>
+          {rightAction ? rightAction : <View style={styles.placeholder} />}
+        </View>
       </View>
-
-      {/* Center Section (Title) */}
-      <View style={styles.titleContainer}>
-        {title && (
-          <Text style={styles.title} numberOfLines={1}>
-            {title}
-          </Text>
-        )}
-      </View>
-
-      {/* Right Section (Action or Spacer) */}
-      <View style={styles.rightContainer}>
-        {rightAction ? (
-          rightAction
-        ) : (
-          <View style={styles.placeholder} />
-        )}
-      </View>
-    </View>
-  );
-});
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   container: {

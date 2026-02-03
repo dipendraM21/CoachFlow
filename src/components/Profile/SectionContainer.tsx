@@ -8,14 +8,16 @@ interface SectionContainerProps {
   children: React.ReactNode;
 }
 
-export const SectionContainer: React.FC<SectionContainerProps> = React.memo(({ title, children }) => {
-  return (
-    <View style={styles.container}>
-      {title && <Text style={styles.title}>{title}</Text>}
-      <View style={styles.card}>{children}</View>
-    </View>
-  );
-});
+export const SectionContainer: React.FC<SectionContainerProps> = React.memo(
+  ({ title, children }) => {
+    return (
+      <View style={styles.container}>
+        {title && <Text style={styles.title}>{title}</Text>}
+        <View style={styles.card}>{children}</View>
+      </View>
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   container: {

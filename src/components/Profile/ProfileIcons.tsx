@@ -7,7 +7,10 @@ interface IconProps {
   size?: number;
 }
 
-export const PersonalInfoIcon: React.FC<IconProps> = ({ color = colors.info, size = 20 }) => (
+export const PersonalInfoIcon: React.FC<IconProps> = ({
+  color = colors.info,
+  size = 20,
+}) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
     <Path
       d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21"
@@ -16,11 +19,22 @@ export const PersonalInfoIcon: React.FC<IconProps> = ({ color = colors.info, siz
       strokeLinecap="round"
       strokeLinejoin="round"
     />
-    <Circle cx="12" cy="7" r="4" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <Circle
+      cx="12"
+      cy="7"
+      r="4"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </Svg>
 );
 
-export const BatchIcon: React.FC<IconProps> = ({ color = colors.info, size = 20 }) => (
+export const BatchIcon: React.FC<IconProps> = ({
+  color = colors.info,
+  size = 20,
+}) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
     <Path
       d="M4 19.5C4 18.837 4.53726 18.3 5.2 18.3H18.8C19.4627 18.3 20 18.837 20 19.5V19.5C20 20.163 19.4627 20.7 18.8 20.7H5.2C4.53726 20.7 4 20.163 4 19.5V19.5Z"
@@ -35,7 +49,10 @@ export const BatchIcon: React.FC<IconProps> = ({ color = colors.info, size = 20 
   </Svg>
 );
 
-export const CertificateIcon: React.FC<IconProps> = ({ color = colors.info, size = 20 }) => (
+export const CertificateIcon: React.FC<IconProps> = ({
+  color = colors.info,
+  size = 20,
+}) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
     <Path
       d="M12 15L8.5 17L9.5 13L6.5 10.5L10.5 10L12 6L13.5 10L17.5 10.5L14.5 13L15.5 17L12 15Z"
@@ -47,15 +64,39 @@ export const CertificateIcon: React.FC<IconProps> = ({ color = colors.info, size
   </Svg>
 );
 
-export const PerformanceIcon: React.FC<IconProps> = ({ color = colors.warning, size = 20 }) => (
+export const PerformanceIcon: React.FC<IconProps> = ({
+  color = colors.warning,
+  size = 20,
+}) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <Path d="M18 20V10" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    <Path d="M12 20V4" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    <Path d="M6 20V14" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <Path
+      d="M18 20V10"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <Path
+      d="M12 20V4"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <Path
+      d="M6 20V14"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </Svg>
 );
 
-export const HelpIcon: React.FC<IconProps> = ({ color = colors.success, size = 20 }) => (
+export const HelpIcon: React.FC<IconProps> = ({
+  color = colors.success,
+  size = 20,
+}) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
     <Circle cx="12" cy="12" r="10" stroke={color} strokeWidth="2" />
     <Path
@@ -64,11 +105,19 @@ export const HelpIcon: React.FC<IconProps> = ({ color = colors.success, size = 2
       strokeWidth="2"
       strokeLinecap="round"
     />
-    <Path d="M12 17H12.01" stroke={color} strokeWidth="2" strokeLinecap="round" />
+    <Path
+      d="M12 17H12.01"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
   </Svg>
 );
 
-export const SettingsIcon: React.FC<IconProps> = ({ color = colors.grey_600, size = 20 }) => (
+export const SettingsIcon: React.FC<IconProps> = ({
+  color = colors.grey_600,
+  size = 20,
+}) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
     <Path
       fillRule="evenodd"
@@ -89,7 +138,10 @@ export const SettingsIcon: React.FC<IconProps> = ({ color = colors.grey_600, siz
   </Svg>
 );
 
-export const LogoutIcon: React.FC<IconProps> = ({ color = colors.danger, size = 20 }) => (
+export const LogoutIcon: React.FC<IconProps> = ({
+  color = colors.danger,
+  size = 20,
+}) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
     <Path
       d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9"
@@ -98,18 +150,42 @@ export const LogoutIcon: React.FC<IconProps> = ({ color = colors.danger, size = 
       strokeLinecap="round"
       strokeLinejoin="round"
     />
-    <Path d="M16 17L21 12L16 7" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    <Path d="M21 12H9" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <Path
+      d="M16 17L21 12L16 7"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <Path
+      d="M21 12H9"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </Svg>
 );
 
-export const ChevronRightIcon: React.FC<IconProps> = ({ color = colors.grey_600, size = 20 }) => (
+export const ChevronRightIcon: React.FC<IconProps> = ({
+  color = colors.grey_600,
+  size = 20,
+}) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <Path d="M9 18L15 12L9 6" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <Path
+      d="M9 18L15 12L9 6"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </Svg>
 );
 
-export const EditIcon: React.FC<IconProps> = ({ color = colors.info, size = 16 }) => (
+export const EditIcon: React.FC<IconProps> = ({
+  color = colors.info,
+  size = 16,
+}) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
     <Path
       d="M17 3C17.2626 2.73735 17.5744 2.52901 17.9176 2.38687C18.2608 2.24473 18.6286 2.17157 19 2.17157C19.3714 2.17157 19.7392 2.24473 20.0824 2.38687C20.4256 2.52901 20.7374 2.73735 21 3C21.2626 3.26264 21.471 3.57444 21.6131 3.9176C21.7553 4.26077 21.8284 4.62856 21.8284 5C21.8284 5.37143 21.7553 5.73923 21.6131 6.08239C21.471 6.42555 21.2626 6.73735 21 7L7.5 20.5L2 22L3.5 16.5L17 3Z"
@@ -121,7 +197,10 @@ export const EditIcon: React.FC<IconProps> = ({ color = colors.info, size = 16 }
   </Svg>
 );
 
-export const CameraIcon: React.FC<IconProps> = ({ color = colors.white, size = 12 }) => (
+export const CameraIcon: React.FC<IconProps> = ({
+  color = colors.white,
+  size = 12,
+}) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
     <Path
       d="M23 19C23 19.5304 22.7893 20.0391 22.4142 20.4142C22.0391 20.7893 21.5304 21 21 21H3C2.46957 21 1.96086 20.7893 1.58579 20.4142C1.21071 20.0391 1 19.5304 1 19V8C1 7.46957 1.21071 6.96086 1.58579 6.58579C1.96086 6.21071 2.46957 6 3 6H7L9 3H15L17 6H21C21.5304 6 22.0391 6.21071 22.4142 6.58579C22.7893 6.96086 23 7.46957 23 8V19Z"
@@ -130,6 +209,14 @@ export const CameraIcon: React.FC<IconProps> = ({ color = colors.white, size = 1
       strokeLinecap="round"
       strokeLinejoin="round"
     />
-    <Circle cx="12" cy="13" r="4" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <Circle
+      cx="12"
+      cy="13"
+      r="4"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </Svg>
 );

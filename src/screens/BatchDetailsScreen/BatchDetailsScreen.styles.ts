@@ -26,7 +26,7 @@ export const batchDetailsStyles = StyleSheet.create({
     borderColor: '#E2E8F0',
   },
   headerTitle: {
-    ...fontStyles.Maison_700_16PX_22LH,
+    ...fontStyles.Maison_600_16PX_20LH,
     color: '#0F172A',
     flex: 1,
     textAlign: 'center',
@@ -80,7 +80,7 @@ export const batchDetailsStyles = StyleSheet.create({
     marginRight: RFont(12),
   },
   institutionLogoText: {
-    ...fontStyles.Maison_700_16PX_22LH,
+    ...fontStyles.Maison_600_16PX_20LH,
     color: colors.white,
     fontSize: RFont(20),
   },
@@ -88,9 +88,9 @@ export const batchDetailsStyles = StyleSheet.create({
     flex: 1,
   },
   academyName: {
-    ...fontStyles.Maison_700_16PX_22LH,
+    ...fontStyles.Maison_600_16PX_20LH,
     color: '#0F172A',
-    fontSize: RFont(14),
+    fontSize: RFont(18),
     marginBottom: RFont(2),
   },
   academyLocation: {
@@ -152,7 +152,7 @@ export const batchDetailsStyles = StyleSheet.create({
     marginBottom: RFont(24),
   },
   sectionTitle: {
-    ...fontStyles.Maison_700_16PX_22LH,
+    ...fontStyles.Maison_600_16PX_20LH,
     color: '#334155',
     fontSize: RFont(12),
     marginBottom: RFont(12),
@@ -210,5 +210,9 @@ export const batchDetailsStyles = StyleSheet.create({
     color: colors.black_900,
     textAlign: 'center',
     marginTop: RFont(40),
+  },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

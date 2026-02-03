@@ -1,20 +1,24 @@
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import {
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ThemeButton } from '../components/Button/Button';
 import { Input } from '../components/TextInputField/Input';
-import type { GuestStackParamList } from '../navigation/GuestNavigator';
+import { useSendOtpMutation } from '../hooks/mutations/useSendOtpMutation';
 import colors from '../theme/colors';
 import { fontFamily, RFont } from '../theme/fonts';
+import { GuestStackParamList } from '../types/navigation';
+import { indianPhonePattern, numericPattern } from '../utils/regexMatch';
+import { showError } from '../utils/toast';
 import { translations } from '../utils/translation';
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<
@@ -22,17 +26,60 @@ type LoginScreenNavigationProp = NativeStackNavigationProp<
   'Login'
 >;
 
+// ... imports
+
+type LoginScreenRouteProp = RouteProp<GuestStackParamList, 'Login'>;
+
 export const LoginScreen: React.FC = () => {
   const navigation = useNavigation<LoginScreenNavigationProp>();
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const route = useRoute<LoginScreenRouteProp>();
+
+  // Pre-fill phone number if navigating back from Verify OTP
+  const [phoneNumber, setPhoneNumber] = useState(
+    route.params?.phoneNumber || '',
+  );
+  const [phoneError, setPhoneError] = useState<string | null>(null);
   const insets = useSafeAreaInsets();
 
+  const { mutate: sendOtp, isPending } = useSendOtpMutation();
+
+  const handlePhoneChange = (text: string) => {
+    // strict strict numeric check
+    if (text === '' || numericPattern.test(text)) {
+      if (text.length <= 10) {
+        setPhoneNumber(text);
+        if (phoneError) setPhoneError(null); // Clear error on typing
+      }
+    }
+  };
+
   const handleContinue = () => {
-    if (!phoneNumber.trim()) {
+    const trimmedPhone = phoneNumber.trim();
+
+    if (!indianPhonePattern.test(trimmedPhone)) {
+      setPhoneError('Please enter a valid 10-digit phone number.');
       return;
     }
-    // Navigate to VerifyOtp screen with phone number
-    navigation.navigate('VerifyOtp', { phoneNumber: phoneNumber.trim() });
+
+    sendOtp(
+      {
+        phone: trimmedPhone,
+        role: 'STUDENT',
+      },
+      {
+        onSuccess: () => {
+          navigation.navigate('VerifyOtp', { phoneNumber: trimmedPhone });
+        },
+        onError: error => {
+          // Toast is ONLY for API errors
+          const errorMessage =
+            error.response?.data?.message ||
+            error.message ||
+            'An error occurred';
+          showError(errorMessage);
+        },
+      },
+    );
   };
 
   return (
@@ -45,7 +92,10 @@ export const LoginScreen: React.FC = () => {
         <View
           style={[
             styles.content,
-            { paddingTop: insets.top, paddingBottom: Math.max(insets.bottom, 24) },
+            {
+              paddingTop: insets.top,
+              paddingBottom: Math.max(insets.bottom, 24),
+            },
           ]}
         >
           <ScrollView
@@ -58,9 +108,11 @@ export const LoginScreen: React.FC = () => {
           >
             {/* App Logo */}
             <View style={styles.logoContainer}>
-              <View style={styles.logo}>
-                <Text style={styles.logoText}>{translations.LOGO_TEXT}</Text>
-              </View>
+              <Image
+                source={require('../assets/images/png/app-logo.jpeg')}
+                style={styles.logoImage}
+                resizeMode="contain"
+              />
             </View>
 
             {/* Welcome Message */}
@@ -77,10 +129,12 @@ export const LoginScreen: React.FC = () => {
                 label={translations.PHONE_NUMBER}
                 placeholder={translations.PHONE_NUMBER_PLACEHOLDER}
                 value={phoneNumber}
-                onChangeText={setPhoneNumber}
-                keyboardType="phone-pad"
+                onChangeText={handlePhoneChange}
+                keyboardType="numeric"
+                maxLength={10}
                 autoComplete="tel"
                 textContentType="telephoneNumber"
+                error={phoneError}
               />
             </View>
           </ScrollView>
@@ -90,7 +144,8 @@ export const LoginScreen: React.FC = () => {
             <ThemeButton
               title={translations.CONTINUE}
               onPress={handleContinue}
-              disabled={!phoneNumber.trim()}
+              disabled={isPending}
+              isLoading={isPending}
             />
           </View>
         </View>
@@ -125,18 +180,10 @@ const styles = StyleSheet.create({
     marginBottom: 32,
     alignItems: 'center',
   },
-  logo: {
-    width: 64,
-    height: 64,
-    borderRadius: 16,
-    backgroundColor: '#000',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  logoText: {
-    fontFamily: fontFamily.MaisonBold,
-    fontSize: RFont(32),
-    color: '#FFF',
+  logoImage: {
+    width: 120,
+    height: 120,
+    // Removed borderRadius/backgroundColor as per typical image logo usage
   },
   welcomeText: {
     fontFamily: fontFamily.MaisonBold,

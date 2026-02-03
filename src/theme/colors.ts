@@ -22,12 +22,14 @@ export const colors = {
   warning: '#FF9500',
   info: '#007AFF',
   grey_100: '#E5E5E6',
+  grey_400: '#9CA3AF',
   red_500: '#FF0000',
   grey_900: '#19191A',
   grey_7A7A7A: '#7A7A7A',
   grey_600: '#62656A',
   secondary_warm_grey: '#DCD5D7',
   black_900: '#1B1B1B',
+  borderColor: '#E2E8F0',
 } as const;
 
 // Type for colors

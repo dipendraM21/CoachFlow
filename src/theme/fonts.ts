@@ -10,14 +10,10 @@ import { Dimensions, PixelRatio, StyleSheet } from 'react-native';
  * - Android: Clean build (./gradlew clean) then rebuild
  */
 export const fontFamily = {
-  MaisonBold: 'Maison-Bold',
-  MaisonDemi: 'Maison-Demi',
-  MaisonLight: 'Maison-Light',
-  MaisonMedium: 'Maison-Medium',
-  MaisonMonoBold: 'MaisonMono-Bold',
-  MaisonMonoLight: 'MaisonMono-Light',
-  MaisonRegular: 'Maison-Regular',
-  MaisonRegularOblique: 'Maison-RegularOblique',
+  MaisonBold: 'Inter-Bold',
+  MaisonDemi: 'Inter-SemiBold',
+  MaisonMedium: 'Inter-Medium',
+  MaisonRegular: 'Inter-Regular',
 };
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const BASE_WIDTH = 400; // Reference width for design

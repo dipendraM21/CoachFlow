@@ -79,4 +79,33 @@ const iconStyles = {
       color: colors.white,
     },
   }).text,
+  menuContainer: (size: number) =>
+    StyleSheet.create({
+      container: {
+        width: RFont(size),
+        height: RFont(size),
+        justifyContent: 'center',
+        gap: RFont(size * 0.25), // Spacing between lines
+      },
+      line: {
+        width: '100%',
+        height: RFont(2), // Line thickness
+        backgroundColor: colors.black_900,
+        borderRadius: RFont(1),
+      },
+    }),
+};
+
+export const MenuIcon: React.FC<{ size?: number; color?: string }> = ({
+  size = 24,
+  color = '#0F172A',
+}) => {
+  const styles = iconStyles.menuContainer(size);
+  return (
+    <View style={styles.container}>
+      <View style={[styles.line, { backgroundColor: color }]} />
+      <View style={[styles.line, { backgroundColor: color }]} />
+      <View style={[styles.line, { backgroundColor: color }]} />
+    </View>
+  );
 };

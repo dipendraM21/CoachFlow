@@ -3,6 +3,13 @@
   "compilerOptions": {
     "types": ["jest"]
   },
-  "include": ["**/*.ts", "**/*.tsx", "src/components/core/TextInputField"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "App.tsx",
+    "index.js",
+    "metro.config.js",
+    "jest.config.js"
+  ],
   "exclude": ["**/node_modules", "**/Pods"]
 }

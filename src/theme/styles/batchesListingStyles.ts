@@ -1,9 +1,6 @@
 import { StyleSheet } from 'react-native';
 import colors from '../colors';
-import { fontStyles } from '../fonts';
-import { RFont } from '../fonts';
-import { gapStyles, paddingStyles } from '../commonMarginPadding';
-import { borderRadiusStyles, boxStyle, globalStyles } from '../globalStyles';
+import { fontStyles, RFont } from '../fonts';
 
 export const batchesListingStyles = StyleSheet.create({
   container: {
@@ -25,6 +22,9 @@ export const batchesListingStyles = StyleSheet.create({
     height: RFont(40),
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  contentContainer: {
+    flex: 1,
   },
   searchContainer: {
     flex: 1,
@@ -73,5 +73,14 @@ export const batchesListingStyles = StyleSheet.create({
   emptySubtext: {
     ...fontStyles.Maison_400_14PX_18LH,
     color: colors.grey_600,
+  },
+  footerLoader: {
+    paddingVertical: RFont(20),
+  },
+  loadingPadding: {
+    paddingTop: RFont(50),
+  },
+  separator: {
+    height: RFont(16),
   },
 });

@@ -1,4 +1,1 @@
-declare module 'theme-actions' {
-
-
-}
+declare module 'theme-actions' {}

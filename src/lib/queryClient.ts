@@ -4,7 +4,7 @@ export function makeQueryClient() {
   return new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 5 * 60 * 1000,
+        staleTime: 5 * 60 * 1000, // 5 minutes (increase if necessary)
         gcTime: 10 * 60 * 1000,
         refetchOnWindowFocus: false, // Do not refetch on window focus
         refetchOnReconnect: false, // Do not refetch when reconnecting
@@ -19,4 +19,13 @@ export function makeQueryClient() {
       },
     },
   });
+}
+
+let queryClient: QueryClient | undefined;
+
+export function getQueryClient() {
+  if (!queryClient) {
+    queryClient = makeQueryClient();
+  }
+  return queryClient;
 }
