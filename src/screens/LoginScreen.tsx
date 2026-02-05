@@ -56,8 +56,25 @@ export const LoginScreen: React.FC = () => {
   const handleContinue = () => {
     const trimmedPhone = phoneNumber.trim();
 
+    if (!trimmedPhone) {
+      setPhoneError('Phone number is required');
+      return;
+    }
+
+    const indianStartDigitPattern = /^[6-9]/;
+
+    if (!indianStartDigitPattern.test(trimmedPhone)) {
+      setPhoneError('Phone number must start with 6, 7, 8, or 9.');
+      return;
+    }
+
+    if (trimmedPhone.length !== 10) {
+      setPhoneError('Phone number must be 10 digits.');
+      return;
+    }
+
     if (!indianPhonePattern.test(trimmedPhone)) {
-      setPhoneError('Please enter a valid 10-digit phone number.');
+      setPhoneError('Please enter a valid Indian mobile number.');
       return;
     }
 

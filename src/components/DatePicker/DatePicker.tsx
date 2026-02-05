@@ -3,6 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { CalendarIcon } from '../../assets/Icons';
 import colors from '../../theme/colors';
 import { fontFamily, RFont } from '../../theme/fonts';
+import { boxStyle } from '../../theme/globalStyles';
 import { DatePickerModal } from './DatePickerModal';
 
 interface DatePickerProps {
@@ -69,7 +70,11 @@ export const DatePicker: React.FC<DatePickerProps> = ({
       {label && <Text style={styles.label}>{label}</Text>}
 
       <TouchableOpacity
-        style={[styles.input, error ? styles.inputError : null]}
+        style={[
+          styles.input,
+          boxStyle.shadow,
+          error ? styles.inputError : null,
+        ]}
         onPress={() => setModalVisible(true)}
         activeOpacity={0.7}
       >
@@ -108,9 +113,9 @@ const styles = StyleSheet.create({
   input: {
     width: '100%',
     height: 52,
-    borderWidth: 1,
-    borderColor: colors.grey_100,
-    borderRadius: 12,
+    borderWidth: 1.3,
+    borderColor: colors.border,
+    borderRadius: 12, // Changed to 8 to match Input.tsx (was 12)
     paddingHorizontal: 16,
     flexDirection: 'row',
     alignItems: 'center',

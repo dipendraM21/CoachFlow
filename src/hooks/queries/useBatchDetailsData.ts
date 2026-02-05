@@ -12,6 +12,22 @@ import {
 import { Batch } from '../../types/batch';
 import { ApiBatch, BatchFeedItem } from '../../types/batch.d';
 
+// Helper to calculate months between two dates
+const calculateMonths = (startDate: string, endDate: string): number => {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  // Basic validation
+  if (isNaN(start.getTime()) || isNaN(end.getTime())) return 0;
+
+  let months = (end.getFullYear() - start.getFullYear()) * 12;
+  months -= start.getMonth();
+  months += end.getMonth();
+
+  // Adjust for partial months if needed, but simple diff is usually sufficient for "X Months"
+  return months <= 0 ? 0 : months;
+};
+
 // Transform API Batch to UI Batch
 const transformBatch = (apiBatch: ApiBatch): Batch => {
   return {
@@ -37,8 +53,22 @@ const transformBatch = (apiBatch: ApiBatch): Batch => {
       end: apiBatch.schedule?.endTime || '',
     },
 
-    duration: apiBatch.totalMonths ? `${apiBatch.totalMonths} Months` : 'N/A',
-    totalMonths: apiBatch.totalMonths,
+    duration: apiBatch.totalMonths
+      ? `${apiBatch.totalMonths} Months`
+      : apiBatch.duration?.startDate && apiBatch.duration?.endDate
+      ? `${calculateMonths(
+          apiBatch.duration.startDate,
+          apiBatch.duration.endDate,
+        )} Months`
+      : 'N/A',
+    totalMonths:
+      apiBatch.totalMonths ||
+      (apiBatch.duration?.startDate && apiBatch.duration?.endDate
+        ? calculateMonths(
+            apiBatch.duration.startDate,
+            apiBatch.duration.endDate,
+          )
+        : 0),
     seatsLeft:
       (apiBatch.capacity?.total || 0) - (apiBatch.capacity?.enrolled || 0),
     totalSeats: apiBatch.capacity?.total,
@@ -171,8 +201,22 @@ const transformInstitute = (
         end: apiBatch.schedule?.endTime || '',
       },
 
-      duration: apiBatch.totalMonths ? `${apiBatch.totalMonths} Months` : 'N/A',
-      totalMonths: apiBatch.totalMonths,
+      duration: apiBatch.totalMonths
+        ? `${apiBatch.totalMonths} Months`
+        : apiBatch.duration?.startDate && apiBatch.duration?.endDate
+        ? `${calculateMonths(
+            apiBatch.duration.startDate,
+            apiBatch.duration.endDate,
+          )} Months`
+        : 'N/A',
+      totalMonths:
+        apiBatch.totalMonths ||
+        (apiBatch.duration?.startDate && apiBatch.duration?.endDate
+          ? calculateMonths(
+              apiBatch.duration.startDate,
+              apiBatch.duration.endDate,
+            )
+          : 0),
       seatsLeft:
         (apiBatch.capacity?.total || 0) - (apiBatch.capacity?.enrolled || 0),
       totalSeats: apiBatch.capacity?.total,

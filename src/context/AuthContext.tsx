@@ -5,6 +5,8 @@ import {
   storeDataInAsyncStorage,
 } from '../utils/storage';
 
+import NetworkClient from '../utils/NetworkClient';
+
 export interface AuthState {
   accessToken: string | null;
   isNewUser: boolean;
@@ -29,6 +31,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     isNewUser: false,
   });
 
+  const logout = React.useCallback(async () => {
+    try {
+      // Optimistically clear state first to trigger navigation
+      setAuthState({
+        accessToken: null,
+        isNewUser: false,
+      });
+
+      await Promise.all([
+        removeItemFromAsyncStorage('accessToken'),
+        removeItemFromAsyncStorage('isNewUser'),
+      ]);
+    } catch (error) {
+      console.error('Failed to logout', error);
+      // State is already cleared, so we don't need to do much here
+    } finally {
+      // Ensure state is cleared in case of any weird race conditions,
+      // though the initial setAuthState should have handled it.
+      setAuthState(current => {
+        if (current.accessToken) {
+          return {
+            accessToken: null,
+            isNewUser: false,
+          };
+        }
+        return current;
+      });
+    }
+  }, []);
+
   useEffect(() => {
     const loadAuth = async () => {
       try {
@@ -49,7 +81,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     };
 
     loadAuth();
-  }, []);
+    NetworkClient.setUnauthorizedCallback(logout);
+  }, [logout]);
 
   const setAuth = async (accessToken: string, isNewUser: boolean) => {
     try {
@@ -77,33 +110,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setAuthState(prev => ({ ...prev, isNewUser }));
     } catch (error) {
       console.error('Failed to update user status', error);
-    }
-  };
-
-  const logout = async () => {
-    try {
-      // Optimistically clear state first to trigger navigation
-      setAuthState({
-        accessToken: null,
-        isNewUser: false,
-      });
-
-      await Promise.all([
-        removeItemFromAsyncStorage('accessToken'),
-        removeItemFromAsyncStorage('isNewUser'),
-      ]);
-    } catch (error) {
-      console.error('Failed to logout', error);
-      // State is already cleared, so we don't need to do much here
-    } finally {
-      // Ensure state is cleared in case of any weird race conditions,
-      // though the initial setAuthState should have handled it.
-      if (authState.accessToken) {
-        setAuthState({
-          accessToken: null,
-          isNewUser: false,
-        });
-      }
     }
   };
 

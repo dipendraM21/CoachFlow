@@ -60,18 +60,26 @@ class NetworkClient {
     return Promise.reject(error);
   };
 
+  private onUnauthorized: (() => void) | null = null;
+
+  public setUnauthorizedCallback(callback: () => void) {
+    this.onUnauthorized = callback;
+  }
+
   // Interceptor: Response
   private handleSuccess = (response: AxiosResponse): AxiosResponse => {
     return response;
   };
 
   private handleError = async (error: AxiosError): Promise<never> => {
-    if (error.response?.status === 401) {
-      // Handle Unauthorized Access
-      // e.g., Toast.show("Session Expired");
-      console.warn('Session expired. Logging out...');
-      await removeItemFromAsyncStorage('token');
-      // Navigation to Login logic requires global navigation ref or callback
+    if (error.response?.status === 401 || error.response?.status === 429) {
+      // Handle Unauthorized Access or Too many requests
+      console.warn('Session expired or Too many requests. Logging out...');
+      await removeItemFromAsyncStorage('accessToken');
+
+      if (this.onUnauthorized) {
+        this.onUnauthorized();
+      }
     }
     return Promise.reject(error);
   };

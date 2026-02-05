@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import colors from '../../theme/colors';
 import { fontFamily, RFont } from '../../theme/fonts';
+import { boxStyle } from '../../theme/globalStyles';
 
 export interface TabOption<T> {
   label: string;
@@ -42,6 +43,7 @@ export const SelectionTab = <T extends string | number>({
               key={option.value}
               style={[
                 styles.tab,
+                boxStyle.shadow,
                 isSelected && styles.tabActive,
                 error && !selectedValue ? styles.tabError : null,
               ]}
@@ -67,7 +69,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   label: {
-    fontFamily: fontFamily.MaisonMedium,
+    fontFamily: fontFamily.MaisonRegular, // Changed from Medium
+    fontWeight: '500', // Added 500 weight to match other labels
     fontSize: RFont(14),
     color: colors.black,
     marginBottom: 8,
@@ -80,15 +83,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFF',
     borderWidth: 1,
-    borderColor: colors.borderColor, // Ensure this key exists in your colors object
-    borderRadius: 12,
+    borderColor: colors.border,
+    borderRadius: 8, // Changed to 8 to match Input
     paddingVertical: 14,
     alignItems: 'center',
     justifyContent: 'center',
   },
   tabActive: {
     borderColor: colors.black,
-    backgroundColor: '#FFF',
+    backgroundColor: colors.black,
   },
   tabError: {
     borderColor: colors.danger,
@@ -100,8 +103,7 @@ const styles = StyleSheet.create({
     color: colors.black,
   },
   tabTextActive: {
-    // Add specific active text styles if needed (e.g., color change)
-    // Currently keeping black as per previous design
+    color: colors.white,
   },
   errorText: {
     fontFamily: fontFamily.MaisonRegular,

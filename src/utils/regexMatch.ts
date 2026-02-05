@@ -1,2 +1,2 @@
-export const indianPhonePattern: RegExp = /^[0-9]{10}$/;
+export const indianPhonePattern: RegExp = /^[6-9]\d{9}$/;
 export const numericPattern: RegExp = /^[0-9]+$/;

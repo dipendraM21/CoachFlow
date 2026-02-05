@@ -341,6 +341,14 @@ export const SetupProfileScreen: React.FC = () => {
               )}
             />
 
+            {/* Phone Number - Disabled */}
+            <Input
+              label="Phone Number"
+              value={authUser?.phone || ''}
+              disabled={true}
+              placeholder="Phone Number"
+            />
+
             {/* Date of Birth */}
             <Controller
               control={control}

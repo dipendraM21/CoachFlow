@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Platform,
   StyleSheet,
@@ -10,7 +10,7 @@ import {
 import { Dropdown } from 'react-native-element-dropdown';
 import colors from '../../theme/colors';
 import { fontFamily, RFont } from '../../theme/fonts';
-import { globalStyles } from '../../theme/globalStyles';
+import { boxStyle } from '../../theme/globalStyles';
 
 export interface SelectInputProps {
   header?: string;
@@ -67,17 +67,13 @@ const SelectInputField: React.FC<SelectInputProps> = ({
 }) => {
   const [isFocus, setIsFocus] = useState(false);
 
-  // Calculate border color based on state
-  const getBorderColor = () => {
-    if (error) {
-      // Simplified logic: if error exists, show red.
-      return colors.danger;
-    }
-    if (isFocus) {
-      return colors.black;
-    }
-    return colors.grey_100;
-  };
+  const borderStyle = useMemo(
+    () => ({
+      borderColor: error ? colors.danger : colors.border,
+      borderWidth: error ? 1.5 : 1,
+    }),
+    [error],
+  );
 
   return (
     <View style={[styles.container, containerStyle]}>
@@ -85,13 +81,7 @@ const SelectInputField: React.FC<SelectInputProps> = ({
       <Dropdown
         mode="modal"
         disable={disabled}
-        style={[
-          styles.dropdown,
-          style,
-          {
-            borderColor: getBorderColor(),
-          },
-        ]}
+        style={[styles.dropdown, style, boxStyle.shadow, borderStyle]}
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
         itemTextStyle={styles.itemTextStyle}
@@ -120,7 +110,7 @@ const SelectInputField: React.FC<SelectInputProps> = ({
           <Chevron
             color={isFocus ? colors.black : colors.gray}
             size={RFont(10)}
-            rotate={isFocus ? '225deg' : '45deg'} // Rotate chevron on focus
+            rotate={isFocus ? '225deg' : '45deg'}
           />
         )}
       />
@@ -140,12 +130,11 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: colors.black,
     marginBottom: 8,
-    ...globalStyles.textLeft,
   },
   dropdown: {
     height: 52,
     backgroundColor: colors.white,
-    borderRadius: 12,
+    borderRadius: 8,
     borderWidth: 1,
     paddingHorizontal: 16,
   },

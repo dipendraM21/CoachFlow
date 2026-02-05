@@ -110,7 +110,7 @@ export const BatchesListingScreen: React.FC = () => {
         onCityPress={handleCityPress}
         onProfilePress={() => navigation.navigate('Profile')}
         logoSource={require('../assets/images/png/bank.png')}
-        showSearchBar={true}
+        showSearchBar={false}
       />
 
       {/* Screen Content */}

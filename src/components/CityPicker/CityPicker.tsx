@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import colors from '../../theme/colors';
 import { fontFamily, RFont } from '../../theme/fonts';
+import { boxStyle } from '../../theme/globalStyles';
 import { CitySelectionSheet } from '../CitySelection/CitySelection';
 
 interface CityPickerProps {
@@ -32,7 +33,7 @@ export const CityPicker: React.FC<CityPickerProps> = ({
     <View style={styles.container}>
       <Text style={styles.label}>City</Text>
       <TouchableOpacity
-        style={[styles.input, error && styles.inputError]}
+        style={[styles.input, boxStyle.shadow, error && styles.inputError]}
         onPress={() => setIsSheetVisible(true)}
         activeOpacity={0.7}
       >
@@ -61,16 +62,17 @@ const styles = StyleSheet.create({
   label: {
     fontFamily: fontFamily.MaisonRegular,
     fontSize: RFont(14),
+    fontWeight: '500',
     color: colors.black,
     marginBottom: RFont(8),
   },
   input: {
     width: '100%',
-    height: RFont(50),
-    borderWidth: 1,
-    borderColor: colors.grey_100,
-    borderRadius: RFont(8),
-    paddingHorizontal: RFont(16),
+    height: 52,
+    borderWidth: 1.3,
+    borderColor: colors.border,
+    borderRadius: 12,
+    paddingHorizontal: 16,
     backgroundColor: colors.white,
     flexDirection: 'row',
     alignItems: 'center',
@@ -82,12 +84,12 @@ const styles = StyleSheet.create({
   },
   inputText: {
     fontFamily: fontFamily.MaisonRegular,
-    fontSize: RFont(16),
+    fontSize: RFont(15), // Adjusted to 15 to match Input.tsx (was 16)
     color: colors.black,
     flex: 1,
   },
   placeholderText: {
-    color: colors.grayLight,
+    color: colors.grayLight, // Input.tsx uses textSecondary (#94A4B8). grayLight is #999999.
   },
   arrow: {
     fontSize: RFont(12),

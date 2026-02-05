@@ -314,7 +314,6 @@ const styles = StyleSheet.create({
     borderRadius: RFont(12),
     paddingHorizontal: RFont(16),
     height: RFont(48),
-    marginBottom: RFont(24),
   },
   searchInput: {
     flex: 1,
@@ -329,6 +328,7 @@ const styles = StyleSheet.create({
     ...fontStyles.Maison_600_12PX_16LH,
     color: '#94A3B8',
     marginBottom: RFont(12),
+    marginTop: RFont(12),
     letterSpacing: 0.5,
     textTransform: 'uppercase',
   },
