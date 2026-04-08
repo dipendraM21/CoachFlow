@@ -1,6 +1,12 @@
-# Profile Image Upload Implementation Guide
-
 This document provides a comprehensive overview of the profile image upload system implemented in CoachFlow.
+
+## 0. Dependencies
+The following packages and modules are used for this implementation:
+
+- **[react-native-image-picker](https://github.com/react-native-image-picker/react-native-image-picker)** (`^7.2.1`): Handles camera capture and gallery selection.
+- **Native `fetch` API**: Used for the upload request to ensure clean multipart boundary generation (bypassing Axios-specific issues).
+- **[@react-native-async-storage/async-storage](https://github.com/react-native-async-storage/async-storage)**: Used to retrieve the Bearer token for authentication.
+- **`PermissionsAndroid`**: Core React Native module used for requesting runtime permissions on Android.
 
 ## 1. Native Configuration
 
