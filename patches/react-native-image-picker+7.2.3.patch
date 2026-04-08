@@ -1,0 +1,57 @@
+diff --git a/node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/ImagePickerModuleImpl.java b/node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/ImagePickerModuleImpl.java
+index 67b6d2e..4a7204d 100644
+--- a/node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/ImagePickerModuleImpl.java
++++ b/node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/ImagePickerModuleImpl.java
+@@ -3,6 +3,7 @@ package com.imagepicker;
+ import android.app.Activity;
+ import android.content.ActivityNotFoundException;
+ import android.content.Intent;
++import android.content.pm.PackageManager;
+ import android.net.Uri;
+ import android.os.Build;
+ import android.provider.MediaStore;
+@@ -157,12 +158,42 @@ public class ImagePickerModuleImpl implements ActivityEventListener {
+             libraryIntent = pickMultipleVisualMedia.createIntent(this.reactContext.getApplicationContext(), mediaRequest);
+         }
+ 
++        PackageManager pm = currentActivity.getPackageManager();
+         try {
++            if (libraryIntent.resolveActivity(pm) == null) {
++                libraryIntent = createLegacyLibraryIntent(isPhoto, isVideo, selectionLimit);
++            }
+             currentActivity.startActivityForResult(libraryIntent, requestCode);
+         } catch (ActivityNotFoundException e) {
+-            callback.invoke(getErrorMap(errOthers, e.getMessage()));
+-            this.callback = null;
++            try {
++                Intent fallbackIntent = createLegacyLibraryIntent(isPhoto, isVideo, selectionLimit);
++                currentActivity.startActivityForResult(fallbackIntent, requestCode);
++            } catch (ActivityNotFoundException e2) {
++                callback.invoke(getErrorMap(errOthers, e2.getMessage()));
++                this.callback = null;
++            }
++        }
++    }
++
++    /**
++     * Fallback when the system Photo Picker (PICK_IMAGES) has no handler — common on some
++     * emulators and devices without the backported picker module.
++     */
++    private static Intent createLegacyLibraryIntent(boolean isPhoto, boolean isVideo, int selectionLimit) {
++        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
++        intent.addCategory(Intent.CATEGORY_OPENABLE);
++        if (isPhoto) {
++            intent.setType("image/*");
++        } else if (isVideo) {
++            intent.setType("video/*");
++        } else {
++            intent.setType("*/*");
++            intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"image/*", "video/*"});
++        }
++        if (selectionLimit != 1) {
++            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+         }
++        return intent;
+     }
+ 
+     void onAssetsObtained(List<Uri> fileUris) {

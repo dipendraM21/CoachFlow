@@ -1,25 +1,40 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   BottomTabBar,
+  mainTabBarScrollPadding,
   TabType,
 } from '../components/BottomNavigation/BottomTabBar';
+
 import colors from '../theme/colors';
 import { BatchesListingScreen } from './BatchesListingScreen';
-import { ProfileScreen } from './ProfileScreen';
+import { LibraryScreen } from './LibraryScreen';
+import { NotificationsScreen } from './NotificationsScreen';
 
 export const MainTabScreen: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<TabType>('Batches');
+  const [activeTab, setActiveTab] = useState<TabType>('Classes');
+  const insets = useSafeAreaInsets();
+
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'Home':
-        // Reuse BatchesListing for Home for now
-        return <BatchesListingScreen />;
-      case 'Batches':
-        return <BatchesListingScreen />;
-      case 'Profile':
-        return <ProfileScreen />;
+      case 'Classes':
+        return (
+          <BatchesListingScreen
+            listBottomPadding={mainTabBarScrollPadding(insets.bottom)}
+          />
+        );
+      case 'Library':
+        return (
+          <LibraryScreen
+            listBottomPadding={mainTabBarScrollPadding(insets.bottom)}
+          />
+        );
+      case 'Notification':
+        return (
+          <NotificationsScreen />
+        );
       default:
         return <BatchesListingScreen />;
     }

@@ -16,7 +16,7 @@ import GuestNavigator from './GuestNavigator';
 import OnboardingNavigator from './OnboardingNavigator';
 import RootNavigator from './RootNavigator';
 
-const navigationRef = createNavigationContainerRef();
+export const navigationRef = createNavigationContainerRef<any>();
 
 const AppNavigator: React.FC = () => {
   const isDarkMode = useColorScheme() === 'dark';

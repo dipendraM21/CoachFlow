@@ -16,6 +16,17 @@ export const GraduationCapIcon: React.FC<{ size?: number; color?: string }> = ({
 
 // ... (MagnifyingGlassIcon and others remain unchanged) ...
 
+export const BellIcon: React.FC<{ size?: number; color?: string }> = ({
+  size = 20,
+  color = '#94A3B8',
+}) => (
+  <View style={iconStyles.container(size)}>
+    <View style={iconStyles.bellBody(size, color)} />
+    <View style={iconStyles.bellBase(size, color)} />
+    <View style={iconStyles.bellClapper(size, color)} />
+  </View>
+);
+
 export const MagnifyingGlassIcon: React.FC<{
   size?: number;
   color?: string;
@@ -229,4 +240,39 @@ const iconStyles = {
         bottom: -RFont(size * 0.05),
       },
     }).body,
+  // Bell Icon
+  bellBody: (size: number, color: string) =>
+    StyleSheet.create({
+      body: {
+        width: RFont(size * 0.55),
+        height: RFont(size * 0.5),
+        backgroundColor: color,
+        borderTopLeftRadius: RFont(size * 0.3),
+        borderTopRightRadius: RFont(size * 0.3),
+        position: 'absolute',
+        top: RFont(size * 0.1),
+      },
+    }).body,
+  bellBase: (size: number, color: string) =>
+    StyleSheet.create({
+      base: {
+        width: RFont(size * 0.75),
+        height: RFont(size * 0.15),
+        backgroundColor: color,
+        borderRadius: RFont(size * 0.05),
+        position: 'absolute',
+        top: RFont(size * 0.55),
+      },
+    }).base,
+  bellClapper: (size: number, color: string) =>
+    StyleSheet.create({
+      clapper: {
+        width: RFont(size * 0.2),
+        height: RFont(size * 0.2),
+        borderRadius: RFont(size * 0.1),
+        backgroundColor: color,
+        position: 'absolute',
+        bottom: RFont(size * 0.02),
+      },
+    }).clapper,
 };

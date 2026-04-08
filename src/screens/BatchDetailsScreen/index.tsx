@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { ThemeButton } from '../../components/Button/Button';
 import { ScreenHeader } from '../../components/Header/ScreenHeader';
 import { InfoCard } from '../../components/InfoCard/InfoCard';
@@ -38,6 +39,7 @@ export const BatchDetailsScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const route = useRoute();
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
 
   const batchId = useMemo(() => {
     // @ts-ignore - Route params definition might misalign with strict check
@@ -85,7 +87,7 @@ export const BatchDetailsScreen: React.FC = () => {
         ]}
       >
         {/* Placeholder for loading spinner or skeleton */}
-        <Text style={{ color: colors.black }}>Loading...</Text>
+        <Text style={{ color: colors.black }}>{t('common.loading')}</Text>
       </View>
     );
   }
@@ -94,19 +96,22 @@ export const BatchDetailsScreen: React.FC = () => {
     return (
       <View style={batchDetailsStyles.container}>
         <Text style={batchDetailsStyles.errorText}>
-          Batch not found or error loading.
+          {t('batches.batch_not_found')}
         </Text>
       </View>
     );
   }
 
   const availabilityText = batch.totalSeats
-    ? `${batch.seatsLeft ?? 0} / ${batch.totalSeats} Seats`
-    : `${batch.seatsLeft ?? 0} Seats Left`;
+    ? t('batches.seats_info', {
+        left: batch.seatsLeft ?? 0,
+        total: batch.totalSeats,
+      })
+    : t('batches.seats_left', { count: batch.seatsLeft ?? 0 });
 
   return (
     <View style={batchDetailsStyles.container}>
-      <ScreenHeader title="Batch Details" onBackPress={handleBack} />
+      <ScreenHeader title={t('batches.batch_details')} onBackPress={handleBack} />
       <ScrollView
         style={batchDetailsStyles.scrollView}
         contentContainerStyle={batchDetailsStyles.scrollContent}
@@ -151,50 +156,52 @@ export const BatchDetailsScreen: React.FC = () => {
 
         {/* Key Information Section */}
         <View style={batchDetailsStyles.keyInfoSection}>
-          <Text style={batchDetailsStyles.sectionTitle}>KEY INFORMATION</Text>
+          <Text style={batchDetailsStyles.sectionTitle}>
+            {t('batches.key_information')}
+          </Text>
           <View style={batchDetailsStyles.infoGrid}>
             <View style={batchDetailsStyles.infoCardWrapper}>
               <InfoCard
                 icon={<CalendarIcon size={20} color="#3B82F6" />}
-                label="Start Date"
+                label={t('batches.start_date')}
                 value={formatDate(batch.startDate)}
               />
             </View>
             <View style={batchDetailsStyles.infoCardWrapper}>
               <InfoCard
                 icon={<ClockIcon size={20} color="#3B82F6" />}
-                label="Timing"
+                label={t('batches.timing')}
                 value={
                   batch.timing
                     ? `${formatTime(batch.timing.start)} - ${formatTime(
                         batch.timing.end,
                       )}`
-                    : 'N/A'
+                    : t('common.not_available')
                 }
               />
             </View>
             <View style={batchDetailsStyles.infoCardWrapper}>
               <InfoCard
                 icon={<DurationIcon size={20} color="#3B82F6" />}
-                label="Duration"
-                value={batch.duration || 'N/A'}
+                label={t('batches.duration')}
+                value={batch.duration || t('common.not_available')}
               />
             </View>
             <View style={batchDetailsStyles.infoCardWrapper}>
               <InfoCard
                 icon={<SeatsIcon size={20} color="#3B82F6" />}
-                label="Seats"
+                label={t('batches.seats')}
                 value={availabilityText}
               />
             </View>
             <View style={batchDetailsStyles.infoCardFullWidth}>
               <InfoCard
                 icon={<MoneyIcon size={20} color="#3B82F6" />}
-                label="Total Fees"
+                label={t('batches.total_fees')}
                 value={
                   typeof batch.fees === 'number'
                     ? `₹${batch.fees.toLocaleString()}`
-                    : batch.fees || 'Not Available'
+                    : batch.fees || t('common.not_available')
                 }
                 fullWidth
               />
@@ -213,7 +220,7 @@ export const BatchDetailsScreen: React.FC = () => {
         ]}
       >
         <ThemeButton
-          title="Call Now"
+          title={t('batches.call_now')}
           onPress={handleCallNow}
           leftIcon={<PhoneIcon size={20} color={colors.white} />}
           fullWidth

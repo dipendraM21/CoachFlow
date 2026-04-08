@@ -9,6 +9,7 @@ export type GuestStackParamList = {
 };
 
 export type RootStackParamList = {
+  MainTab: undefined;
   BatchesListing: undefined;
   BatchDetails: { batchId: string };
   AcademyProfile: { instituteId: string };
@@ -16,6 +17,8 @@ export type RootStackParamList = {
   SetupProfile: {
     mode: 'create' | 'edit';
   };
+  HelpSupport: undefined;
+  Notifications: undefined;
 };
 
 export type OnboardingStackParamList = {

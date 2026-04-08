@@ -11,6 +11,7 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { ThemeButton } from '../components/Button/Button';
 import { Input } from '../components/TextInputField/Input';
 import { useSendOtpMutation } from '../hooks/mutations/useSendOtpMutation';
@@ -19,7 +20,6 @@ import { fontFamily, RFont } from '../theme/fonts';
 import { GuestStackParamList } from '../types/navigation';
 import { indianPhonePattern, numericPattern } from '../utils/regexMatch';
 import { showError } from '../utils/toast';
-import { translations } from '../utils/translation';
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<
   GuestStackParamList,
@@ -40,6 +40,7 @@ export const LoginScreen: React.FC = () => {
   );
   const [phoneError, setPhoneError] = useState<string | null>(null);
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
 
   const { mutate: sendOtp, isPending } = useSendOtpMutation();
 
@@ -57,7 +58,7 @@ export const LoginScreen: React.FC = () => {
     const trimmedPhone = phoneNumber.trim();
 
     if (!trimmedPhone) {
-      setPhoneError('Phone number is required');
+      setPhoneError(t('common.required_field'));
       return;
     }
 
@@ -69,12 +70,12 @@ export const LoginScreen: React.FC = () => {
     }
 
     if (trimmedPhone.length !== 10) {
-      setPhoneError('Phone number must be 10 digits.');
+      setPhoneError(t('common.invalid_phone'));
       return;
     }
 
     if (!indianPhonePattern.test(trimmedPhone)) {
-      setPhoneError('Please enter a valid Indian mobile number.');
+      setPhoneError(t('common.invalid_phone'));
       return;
     }
 
@@ -126,25 +127,25 @@ export const LoginScreen: React.FC = () => {
             {/* App Logo */}
             <View style={styles.logoContainer}>
               <Image
-                source={require('../assets/images/png/app-logo.jpeg')}
+                source={require('../assets/images/png/app-logo-r.webp')}
                 style={styles.logoImage}
                 resizeMode="contain"
               />
             </View>
 
             {/* Welcome Message */}
-            <Text style={styles.welcomeText}>{translations.WELCOME_BACK}</Text>
-
+            <Text style={styles.welcomeText}>{t('common.welcome_back')}</Text>
+ 
             {/* Instructional Text */}
             <Text style={styles.instructionText}>
-              {translations.ENTER_NUMBER_TO_DISCOVER}
+              {t('auth.enter_number_to_discover')}
             </Text>
-
+ 
             {/* Phone Number Input */}
             <View style={styles.inputContainer}>
               <Input
-                label={translations.PHONE_NUMBER}
-                placeholder={translations.PHONE_NUMBER_PLACEHOLDER}
+                label={t('common.phone_number')}
+                placeholder={t('common.phone_number_placeholder')}
                 value={phoneNumber}
                 onChangeText={handlePhoneChange}
                 keyboardType="numeric"
@@ -155,11 +156,11 @@ export const LoginScreen: React.FC = () => {
               />
             </View>
           </ScrollView>
-
+ 
           {/* Continue Button */}
           <View style={styles.buttonContainer}>
             <ThemeButton
-              title={translations.CONTINUE}
+              title={t('common.continue')}
               onPress={handleContinue}
               disabled={isPending}
               isLoading={isPending}

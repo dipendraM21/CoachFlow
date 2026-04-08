@@ -37,12 +37,12 @@ interface CitySelectionSheetProps {
 }
 
 const POPULAR_CITIES = [
-  'Mumbai',
-  'Delhi',
-  'Kota',
-  'Jaipur',
-  'Pune',
-  'Bangalore',
+  'Ahmedabad',
+  'Surat',
+  'Vadodara',
+  'Rajkot',
+  'Gandhinagar',
+  'Bhavnagar',
 ];
 
 export const CitySelectionSheet: React.FC<CitySelectionSheetProps> = ({

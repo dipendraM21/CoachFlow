@@ -8,7 +8,9 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { appHeaderStyles } from './AppHeader.styles';
+import { RFont } from '../../theme/fonts';
 import {
   ChevronDownIcon,
   GraduationCapIcon,
@@ -33,6 +35,7 @@ export const AppHeader = memo<AppHeaderProps>(
     showSearchBar = false,
   }) => {
     const insets = useSafeAreaInsets();
+    const { t } = useTranslation();
 
     return (
       <View style={[appHeaderStyles.container, { paddingTop: insets.top }]}>
@@ -62,7 +65,7 @@ export const AppHeader = memo<AppHeaderProps>(
                 ]}
               >
                 <Text style={appHeaderStyles.cityText} numberOfLines={1}>
-                  {selectedCity}
+                  {selectedCity || t('common.select_city')}
                 </Text>
                 <ChevronDownIcon size={10} color="#64748B" />
               </Pressable>
@@ -85,7 +88,7 @@ export const AppHeader = memo<AppHeaderProps>(
                 <MagnifyingGlassIcon size={16} color="#94A3B8" />
                 <TextInput
                   style={appHeaderStyles.searchInput}
-                  placeholder="Search exam, coaching, or batch"
+                  placeholder={t('common.search_placeholder')}
                   placeholderTextColor="#94A3B8"
                   returnKeyType="search"
                 />

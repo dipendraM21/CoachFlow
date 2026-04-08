@@ -37,17 +37,18 @@ export const academyProfileStyles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    padding: RFont(20),
+    paddingHorizontal: RFont(20),
+    paddingTop: RFont(8), // Further reduced from 16
     paddingBottom: RFont(32),
   },
   profileSection: {
-    marginBottom: RFont(32),
+    marginBottom: RFont(16), // Further reduced from 24
   },
   // New Card Style for Profile Summary
   profileCard: {
     backgroundColor: colors.white,
-    borderRadius: RFont(24),
-    padding: RFont(24),
+    borderRadius: RFont(20),
+    padding: RFont(16), // Increased from 12 to provide bottom clearance
     shadowColor: '#64748B',
     shadowOffset: { width: 0, height: RFont(4) },
     shadowOpacity: 0.08,
@@ -55,25 +56,32 @@ export const academyProfileStyles = StyleSheet.create({
     elevation: 3,
     borderWidth: 1,
     borderColor: '#F1F5F9',
-    alignItems: 'center',
+    // Removed alignItems: 'center' to allow horizontal layout
   },
-  logoContainer: {
+  profileHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    gap: RFont(16),
     marginBottom: RFont(16),
   },
+  logoContainer: {
+    // Removed marginBottom: 12
+  },
   logo: {
-    width: RFont(80),
-    height: RFont(80),
-    borderRadius: RFont(40),
+    width: RFont(52), // Reduced from 64
+    height: RFont(52),
+    borderRadius: RFont(26),
     backgroundColor: colors.white,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#E2E8F0', // Slate-200
+    borderColor: '#E2E8F0',
   },
   logoPlaceholder: {
-    width: RFont(80),
-    height: RFont(80),
-    borderRadius: RFont(40),
+    width: RFont(52),
+    height: RFont(52),
+    borderRadius: RFont(26),
     backgroundColor: colors.white,
     justifyContent: 'center',
     alignItems: 'center',
@@ -89,17 +97,17 @@ export const academyProfileStyles = StyleSheet.create({
   },
   plusHorizontal: {
     position: 'absolute',
-    width: RFont(40),
-    height: RFont(3),
-    backgroundColor: '#3B82F6', // Blue-500
-    borderRadius: RFont(1.5),
+    width: RFont(24), // Reduced from 32
+    height: RFont(2),
+    backgroundColor: '#3B82F6',
+    borderRadius: RFont(1),
   },
   plusVertical: {
     position: 'absolute',
-    width: RFont(3),
-    height: RFont(40),
+    width: RFont(2),
+    height: RFont(24), // Reduced from 32
     backgroundColor: '#3B82F6',
-    borderRadius: RFont(1.5),
+    borderRadius: RFont(1),
   },
   logoText: {
     ...fontStyles.Maison_600_16PX_20LH,
@@ -108,32 +116,34 @@ export const academyProfileStyles = StyleSheet.create({
   academyName: {
     ...fontStyles.Maison_600_24PX_32LH,
     color: '#0F172A',
-    marginBottom: RFont(12),
-    textAlign: 'center',
+    flex: 1,
     fontWeight: '700',
+    fontSize: RFont(18), // Slightly smaller
   },
   locationPill: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     backgroundColor: colors.white,
-    borderRadius: RFont(100),
+    borderRadius: RFont(12),
     paddingHorizontal: RFont(16),
-    paddingVertical: RFont(8),
+    paddingVertical: RFont(12),
     borderWidth: 1,
     borderColor: '#E2E8F0',
-    gap: RFont(6),
-    marginBottom: RFont(24),
+    gap: RFont(8),
+    marginBottom: RFont(16),
   },
   locationText: {
-    ...fontStyles.Maison_600_14PX_18LH, // Keeping 14px as per image reference
+    ...fontStyles.Maison_600_14PX_18LH,
     color: '#0F172A',
     fontWeight: '600',
+    flex: 1,
+    lineHeight: RFont(20),
   },
   actionButtonsContainer: {
     flexDirection: 'row',
     gap: RFont(12), // Strict gap from Batch Card
     width: '100%',
-    marginTop: RFont(8),
+    marginVertical: RFont(8),
   },
   callButtonWrapper: {
     flex: 1,
@@ -142,17 +152,17 @@ export const academyProfileStyles = StyleSheet.create({
     flex: 1,
   },
   contactButton: {
-    backgroundColor: '#DBEAFE', // Blue-100 (Light Blue aka "Light Periwinkle" approx)
-    borderRadius: RFont(100), // Fully rounded pill shape
-    height: RFont(48),
+    backgroundColor: '#EFF6FF',
+    borderRadius: RFont(100),
+    height: RFont(38), // Reduced from 44
     borderWidth: 0,
     elevation: 0,
     shadowOpacity: 0,
   },
   contactButtonText: {
-    color: '#1D4ED8', // Blue-700 (Dark Blue)
-    fontWeight: '700',
-    fontSize: RFont(16),
+    color: '#2563EB',
+    fontWeight: '600',
+    fontSize: RFont(13), // Reduced from 15
   },
   batchesSection: {
     marginTop: RFont(0),
@@ -189,5 +199,41 @@ export const academyProfileStyles = StyleSheet.create({
     color: '#64748B',
     textAlign: 'center',
     marginTop: RFont(20),
+  },
+  // Tabs
+  tabsContainer: {
+    backgroundColor: '#F1F5F9', // Slate-100 background for the track
+    borderRadius: RFont(100),
+    padding: RFont(4),
+    marginBottom: RFont(24),
+    flexDirection: 'row',
+  },
+  tabsScrollContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: RFont(8),
+  },
+  tabButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: RFont(10),
+    paddingHorizontal: RFont(20),
+    borderRadius: RFont(100),
+    gap: RFont(6),
+  },
+  tabButtonActive: {
+    backgroundColor: '#0F172A', // Slate-900
+  },
+  tabText: {
+    ...fontStyles.Maison_600_14PX_18LH,
+    color: '#0F172A',
+    fontWeight: '600',
+  },
+  tabTextActive: {
+    color: colors.white,
+  },
+  checkIcon: {
+    marginLeft: RFont(2),
   },
 });

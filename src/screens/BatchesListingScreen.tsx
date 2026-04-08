@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
@@ -8,11 +8,16 @@ import {
   Text,
   View,
 } from 'react-native';
-import { BatchCard } from '../components/BatchCard/BatchCard';
+import { useTranslation } from 'react-i18next';
 import { CitySelectionSheet } from '../components/CitySelection/CitySelection';
+import { CoachingCard } from '../components/CoachingCard/CoachingCard';
+import { CoachingCardSkeleton } from '../components/CoachingCard/CoachingSkeleton';
 import { AppHeader } from '../components/Header/AppHeader';
+import { useCity } from '../context/CityContext';
 import { useAuthData } from '../hooks/queries/useAuthData';
 import { useBatchFeedData } from '../hooks/queries/useBatchDetailsData';
+import colors from '../theme/colors';
+import { RFont } from '../theme/fonts';
 import { batchesListingStyles } from '../theme/styles/batchesListingStyles';
 import { Batch } from '../types/batch';
 import { GuestStackParamList, RootStackParamList } from '../types/navigation';
@@ -23,21 +28,33 @@ type NavigationProp = NativeStackNavigationProp<
 
 const ItemSeparator = () => <View style={batchesListingStyles.separator} />;
 
-export const BatchesListingScreen: React.FC = () => {
+interface BatchesListingScreenProps {
+  /** When embedded under MainTab, pass so the last cards clear the floating tab bar */
+  listBottomPadding?: number;
+}
+
+export const BatchesListingScreen: React.FC<BatchesListingScreenProps> = ({
+  listBottomPadding,
+}) => {
   const navigation = useNavigation<NavigationProp>();
+  const { t } = useTranslation();
 
   // 1. Auth & City State
   const { authUser } = useAuthData();
-
-  const [currentCity, setCurrentCity] = useState<string | undefined>(
-    authUser?.profile?.address?.city,
-  );
+  const { currentCity, setCity } = useCity();
 
   const [showCitySheet, setShowCitySheet] = useState(false);
 
   // 2. Fetch Data
-  const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
+  const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage, refetch } =
     useBatchFeedData({ city: currentCity });
+
+  // Refetch when screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch]),
+  );
 
   // Flattens pages into a single list
 
@@ -45,25 +62,33 @@ export const BatchesListingScreen: React.FC = () => {
     setShowCitySheet(true);
   }, []);
 
-  const handleSelectCity = useCallback((city: string) => {
-    setCurrentCity(city);
-    // Ideally we also update the user's preference in backend if they are logged in?
-    // For now, local state drive the feed.
-    setShowCitySheet(false);
-  }, []);
+  const handleSelectCity = useCallback(
+    (city: string) => {
+      setCity(city);
+      // Ideally we also update the user's preference in backend if they are logged in?
+      // For now, local state drive the feed.
+      setShowCitySheet(false);
+    },
+    [setCity],
+  );
 
   const handleViewDetails = useCallback(
-    (batchId: string) => {
-      // Find batch in full list
-      if (batchId) {
-        navigation.navigate('BatchDetails', { batchId });
+    (instituteId: string) => {
+      if (instituteId) {
+        navigation.navigate('AcademyProfile', { instituteId });
       }
     },
     [navigation],
   );
 
   const renderBatchItem: ListRenderItem<Batch> = useCallback(
-    ({ item }) => <BatchCard batch={item} onViewDetails={handleViewDetails} />,
+    ({ item }) => (
+      <CoachingCard
+        batch={item}
+        onViewDetails={handleViewDetails}
+        onSubscribe={() => refetch()}
+      />
+    ),
     [handleViewDetails],
   );
 
@@ -82,34 +107,36 @@ export const BatchesListingScreen: React.FC = () => {
   const renderEmptyComponent = useMemo(() => {
     if (isLoading) {
       return (
-        <View
-          style={[
-            batchesListingStyles.emptyContainer,
-            batchesListingStyles.loadingPadding,
-          ]}
-        >
-          <ActivityIndicator size="large" color="#FF6B35" />
+        <View style={batchesListingStyles.listContent}>
+          {[1, 2, 3, 4].map(idx => (
+            <React.Fragment key={idx}>
+              <CoachingCardSkeleton />
+              {idx < 4 && <ItemSeparator />}
+            </React.Fragment>
+          ))}
         </View>
       );
     }
     return (
       <View style={batchesListingStyles.emptyContainer}>
-        <Text style={batchesListingStyles.emptyText}>No batches found</Text>
+        <Text style={batchesListingStyles.emptyText}>
+          {t('batches.no_batches_found')}
+        </Text>
         <Text style={batchesListingStyles.emptySubtext}>
-          Try changing the city or check back later.
+          {t('batches.try_changing_city')}
         </Text>
       </View>
     );
-  }, [isLoading]);
+  }, [isLoading, t]);
 
   return (
     <View style={batchesListingStyles.container}>
       {/* Reusable App Header */}
       <AppHeader
-        selectedCity={currentCity || 'Select City'}
+        selectedCity={currentCity || t('common.select_city')}
         onCityPress={handleCityPress}
         onProfilePress={() => navigation.navigate('Profile')}
-        logoSource={require('../assets/images/png/bank.png')}
+        logoSource={require('../assets/images/png/bank-r.webp')}
         showSearchBar={false}
       />
 
@@ -124,6 +151,7 @@ export const BatchesListingScreen: React.FC = () => {
           keyExtractor={keyExtractor}
           contentContainerStyle={[
             batchesListingStyles.listContent,
+            { paddingBottom: listBottomPadding || RFont(100) },
             !data?.pages?.length && batchesListingStyles.listContentEmpty,
           ]}
           showsVerticalScrollIndicator={false}

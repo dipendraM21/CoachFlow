@@ -1,4 +1,4 @@
-import Config from 'react-native-config';
+import Config from '../config';
 import {
   GetAuthUserResponse,
   SendOtpPayload,
@@ -6,10 +6,18 @@ import {
   VerifyOtpPayload,
   VerifyOtpResponse,
 } from '../types/auth/sendOtp.types';
-import { GetBatchDetailResponse, GetBatchesResponse } from '../types/batch.d';
+import {
+  GetBatchDetailResponse,
+  GetClassesResponse,
+  GetLibrariesResponse,
+} from '../types/batch.d';
 import { GetBatchesPayload } from '../types/common';
-import { UpdateProfilePayload } from '../types/profile';
+import {
+  UpdateProfilePayload,
+  UploadProfilePhotoResponse,
+} from '../types/profile';
 import NetworkClient from '../utils/NetworkClient';
+import { getDataFromAsyncStorage } from '../utils/storage';
 
 export interface FcmTokenPayload {
   token: string;
@@ -85,11 +93,23 @@ export const getBatchListApi = (data: GetBatchesPayload) => {
   const queryParameters = {
     ...(data.page ? { page: data.page.toString() } : {}),
     ...(data.limit ? { limit: data.limit.toString() } : {}),
-    ...(data.city ? { city: data.city } : {}),
+    ...(data.city ? { city: data.city, district: data.city } : {}),
   };
 
-  const apiUrl = generateApiUrl('students/feed', queryParameters);
-  return NetworkClient.get<GetBatchesResponse>(apiUrl);
+  const apiUrl = generateApiUrl('students/classes', queryParameters);
+  return NetworkClient.get<GetClassesResponse>(apiUrl);
+};
+
+export const getLibraryListingApi = (data: GetBatchesPayload) => {
+  const queryParameters = {
+    ...(data.page ? { page: data.page.toString() } : {}),
+    ...(data.limit ? { limit: data.limit.toString() } : {}),
+    ...(data.city ? { city: data.city } : {}),
+    ...(data.district ? { district: data.district } : {}),
+  };
+
+  const apiUrl = generateApiUrl('students/libraries', queryParameters);
+  return NetworkClient.get<GetLibrariesResponse>(apiUrl);
 };
 
 export const getBatchDetailsByApi = (id: string) => {
@@ -97,23 +117,72 @@ export const getBatchDetailsByApi = (id: string) => {
   return NetworkClient.get<GetBatchDetailResponse>(apiUrl);
 };
 
-import { GetInstituteDetailsResponse } from '../types/academy';
+export const subscribeInstituteApi = (id: string) => {
+  return NetworkClient.post(`students/institute/${id}/subscribe`);
+};
+
+export const unsubscribeInstituteApi = (id: string) => {
+  return NetworkClient.delete(`students/institute/${id}/subscribe`);
+};
+
+import {
+  GetInstituteBatchesPayload,
+  GetInstituteBatchesResponse,
+  GetInstituteDetailsResponse,
+  GetPublicInstituteProfileResponse,
+} from '../types/academy';
 
 export const getInstituteDetailsByApi = (id: string) => {
   const apiUrl = `students/institute/${id}`;
   return NetworkClient.get<GetInstituteDetailsResponse>(apiUrl);
 };
 
-import { UploadProfilePhotoResponse } from '../types/profile';
+export const getPublicInstituteProfileApi = (id: string) => {
+  const apiUrl = `students/institute/${id}`;
+  return NetworkClient.get<GetPublicInstituteProfileResponse>(apiUrl);
+};
 
-export const uploadStudentProfilePhoto = async (formData: FormData) => {
-  const url = 'upload/student/profile-photo';
-  return NetworkClient.post<UploadProfilePhotoResponse>(url, formData, {
+export const getInstituteBatchesApi = (data: GetInstituteBatchesPayload) => {
+  const queryParameters = {
+    ...(data.page ? { page: data.page.toString() } : {}),
+    ...(data.limit ? { limit: data.limit.toString() } : {}),
+    ...(data.filter ? { filter: data.filter } : {}),
+  };
+
+  const apiUrl = generateApiUrl(
+    `students/institute/${data.id}/batches`,
+    queryParameters,
+  );
+  return NetworkClient.get<GetInstituteBatchesResponse>(apiUrl);
+};
+
+export const uploadStudentProfilePhoto = async (
+  formData: FormData,
+): Promise<UploadProfilePhotoResponse> => {
+  console.log('check158', formData);
+
+  const token = await getDataFromAsyncStorage('accessToken');
+  const baseURL =
+    Config.BASE_URL || 'https://vishal-backend-kqvl.onrender.com/api/';
+  const url = `${baseURL}upload/student/profile-photo`;
+
+  const response = await fetch(url, {
+    method: 'POST',
     headers: {
-      'Content-Type': undefined,
+      Authorization: `Bearer ${token}`,
+      // ⚠️ Do NOT set Content-Type here — fetch + FormData sets it
+      // automatically with the correct multipart/form-data boundary
     },
-    transformRequest: (data, _headers) => {
-      return data;
-    },
+    body: formData,
   });
+
+  const json = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      json?.message || `Upload failed with status ${response.status}`,
+    );
+  }
+
+  return json;
 };

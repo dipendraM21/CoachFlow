@@ -1,4 +1,4 @@
-package com.coachflow
+package com.cortax.studybuddy
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

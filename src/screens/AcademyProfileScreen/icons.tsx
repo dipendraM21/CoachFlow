@@ -1,179 +1,79 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import Svg, { Circle, Path } from 'react-native-svg';
 import colors from '../../theme/colors';
-import { RFont } from '../../theme/fonts';
-
-export const BackArrowIcon: React.FC<{ size?: number; color?: string }> = ({
-  size = 24,
-  color = colors.black_900,
-}) => (
-  <View style={iconStyles.container(size)}>
-    <View style={iconStyles.backArrow(size, color)} />
-  </View>
-);
 
 export const LocationIcon: React.FC<{ size?: number; color?: string }> = ({
   size = 16,
   color = colors.grey_600,
 }) => (
-  <View style={iconStyles.container(size)}>
-    <View style={iconStyles.locationPin(size, color)} />
-    <View style={iconStyles.locationDot(size, color)} />
-  </View>
-);
-
-export const GlobeIcon: React.FC<{ size?: number; color?: string }> = ({
-  size = 16,
-  color = colors.grey_600,
-}) => (
-  <View style={iconStyles.container(size)}>
-    <View style={iconStyles.globeOuter(size, color)} />
-    <View style={iconStyles.globeInner(size, color)} />
-  </View>
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path
+      d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <Circle
+      cx="12"
+      cy="10"
+      r="3"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </Svg>
 );
 
 export const PhoneIcon: React.FC<{ size?: number; color?: string }> = ({
   size = 20,
   color = colors.white,
 }) => (
-  <View style={iconStyles.container(size)}>
-    <View style={iconStyles.phoneOuter(size, color)}>
-      <View style={iconStyles.phoneHandle(size, color)} />
-    </View>
-  </View>
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path
+      d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </Svg>
 );
 
 export const EmailIcon: React.FC<{ size?: number; color?: string }> = ({
   size = 20,
   color = colors.info,
 }) => (
-  <View style={iconStyles.container(size)}>
-    <View style={iconStyles.emailOuter(size, color)}>
-      <View style={iconStyles.emailInner(size, color)} />
-    </View>
-  </View>
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path
+      d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <Path
+      d="M22 6l-10 7L2 6"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </Svg>
 );
 
-const iconStyles = {
-  container: (size: number) =>
-    StyleSheet.create({
-      container: {
-        width: RFont(size),
-        height: RFont(size),
-        justifyContent: 'center',
-        alignItems: 'center',
-      },
-    }).container,
-  backArrow: (size: number, color: string) =>
-    StyleSheet.create({
-      arrow: {
-        width: RFont(size * 0.6),
-        height: RFont(size * 0.6),
-        borderTopWidth: 2,
-        borderLeftWidth: 2,
-        borderColor: color,
-        transform: [{ rotate: '-45deg' }],
-      },
-    }).arrow,
-  locationPin: (size: number, color: string) =>
-    StyleSheet.create({
-      pin: {
-        width: RFont(size * 0.5),
-        height: RFont(size * 0.7),
-        borderRadius: RFont(size * 0.25),
-        borderWidth: 1.5,
-        borderColor: color,
-        borderBottomWidth: 0,
-        borderBottomLeftRadius: 0,
-        borderBottomRightRadius: 0,
-      },
-    }).pin,
-  locationDot: (size: number, color: string) =>
-    StyleSheet.create({
-      dot: {
-        position: 'absolute',
-        bottom: RFont(-size * 0.1),
-        width: RFont(size * 0.3),
-        height: RFont(size * 0.3),
-        borderRadius: RFont(size * 0.15),
-        backgroundColor: color,
-      },
-    }).dot,
-  globeOuter: (size: number, color: string) =>
-    StyleSheet.create({
-      outer: {
-        width: RFont(size * 0.8),
-        height: RFont(size * 0.8),
-        borderRadius: RFont(size * 0.4),
-        borderWidth: 1.5,
-        borderColor: color,
-      },
-    }).outer,
-  globeInner: (size: number, color: string) =>
-    StyleSheet.create({
-      inner: {
-        position: 'absolute',
-        width: RFont(size * 0.5),
-        height: RFont(size * 0.5),
-        borderRadius: RFont(size * 0.25),
-        borderWidth: 1.5,
-        borderColor: color,
-        top: RFont(size * 0.15),
-        left: RFont(size * 0.15),
-      },
-    }).inner,
-  phoneOuter: (size: number, color: string) =>
-    StyleSheet.create({
-      outer: {
-        width: RFont(size * 0.7),
-        height: RFont(size * 1.2),
-        borderRadius: RFont(size * 0.15),
-        borderWidth: 2,
-        borderColor: color,
-        justifyContent: 'center',
-        alignItems: 'center',
-        position: 'relative',
-      },
-    }).outer,
-  phoneHandle: (size: number, color: string) =>
-    StyleSheet.create({
-      handle: {
-        position: 'absolute',
-        bottom: RFont(-size * 0.1),
-        width: RFont(size * 0.3),
-        height: RFont(size * 0.15),
-        borderBottomLeftRadius: RFont(size * 0.1),
-        borderBottomRightRadius: RFont(size * 0.1),
-        borderLeftWidth: 2,
-        borderRightWidth: 2,
-        borderBottomWidth: 2,
-        borderColor: color,
-      },
-    }).handle,
-  emailOuter: (size: number, color: string) =>
-    StyleSheet.create({
-      outer: {
-        width: RFont(size * 0.9),
-        height: RFont(size * 0.7),
-        borderRadius: RFont(size * 0.1),
-        borderWidth: 2,
-        borderColor: color,
-        justifyContent: 'center',
-        alignItems: 'center',
-      },
-    }).outer,
-  emailInner: (size: number, color: string) =>
-    StyleSheet.create({
-      inner: {
-        width: RFont(size * 0.5),
-        height: RFont(size * 0.3),
-        borderBottomWidth: 2,
-        borderLeftWidth: 2,
-        borderRightWidth: 2,
-        borderColor: color,
-        borderBottomLeftRadius: RFont(size * 0.05),
-        borderBottomRightRadius: RFont(size * 0.05),
-        marginTop: RFont(-size * 0.1),
-      },
-    }).inner,
-};
+export const CheckIcon: React.FC<{ size?: number; color?: string }> = ({
+  size = 14,
+  color = colors.white,
+}) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path
+      d="M17 9L11 15L7 11"
+      stroke={color}
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </Svg>
+);

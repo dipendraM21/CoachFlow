@@ -139,12 +139,12 @@ export const batchCardStyles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   gridRowSpaced: {
-    marginTop: RFont(12),
+    marginTop: RFont(16),
   },
   gridItem: {
     flex: 1,
-    alignItems: 'flex-start', // User requested start alignment
-    paddingHorizontal: RFont(4),
+    alignItems: 'flex-start',
+    paddingHorizontal: RFont(2),
   },
   gridBorderLeft: {
     // No longer used in 2x2
@@ -214,5 +214,36 @@ export const batchCardStyles = StyleSheet.create({
     color: '#FFFFFF',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
+  },
+  // Status Badge
+  statusBadge: {
+    paddingHorizontal: RFont(10),
+    paddingVertical: RFont(4),
+    borderRadius: RFont(6),
+    alignSelf: 'flex-start',
+  },
+  statusBadgeUpcoming: {
+    backgroundColor: '#EFF6FF', // Blue-50
+  },
+  statusBadgeCurrent: {
+    backgroundColor: '#F0FDF4', // Green-50
+  },
+  statusBadgeCompleted: {
+    backgroundColor: '#F8FAFC', // Slate-50
+  },
+  statusBadgeText: {
+    ...fontStyles.Maison_600_12PX_16LH,
+    fontSize: RFont(11),
+    fontWeight: '700',
+    textTransform: 'uppercase',
+  },
+  statusBadgeTextUpcoming: {
+    color: '#3B82F6', // Blue-500
+  },
+  statusBadgeTextCurrent: {
+    color: '#22C55E', // Green-500
+  },
+  statusBadgeTextCompleted: {
+    color: '#64748B', // Slate-500
   },
 });

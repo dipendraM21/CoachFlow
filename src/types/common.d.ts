@@ -20,4 +20,5 @@ export interface GetBatchesPayload {
   page?: number;
   limit?: number;
   city?: string;
+  district?: string;
 }

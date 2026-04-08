@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
-import { StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { StyleSheet, Text, View, ViewStyle, TouchableOpacity } from 'react-native';
 // @ts-ignore
-import { BaseToastProps } from 'react-native-toast-message';
+import Toast, { BaseToastProps } from 'react-native-toast-message';
 import colors from '../../theme/colors';
 import { fontFamily, RFont } from '../../theme/fonts';
 import { ToastProps, ToastType } from '../../types/toast/toast.types';
@@ -42,7 +42,7 @@ const getToastColors = (type: ToastType) => {
 };
 
 export const AppToast: React.FC<ToastProps & BaseToastProps> = React.memo(
-  ({ type, text1, text2 }) => {
+  ({ type, text1, text2, onPress }) => {
     const toastColors = useMemo(() => getToastColors(type), [type]);
 
     const containerStyle = useMemo<ViewStyle>(
@@ -55,7 +55,11 @@ export const AppToast: React.FC<ToastProps & BaseToastProps> = React.memo(
     );
 
     return (
-      <View style={containerStyle}>
+      <TouchableOpacity 
+        activeOpacity={0.9} 
+        onPress={onPress || (() => Toast.hide())} 
+        style={containerStyle}
+      >
         <View style={styles.contentContainer}>
           {text1 ? (
             <Text style={[styles.title, { color: toastColors.icon }]}>
@@ -64,7 +68,7 @@ export const AppToast: React.FC<ToastProps & BaseToastProps> = React.memo(
           ) : null}
           {text2 ? <Text style={styles.message}>{text2}</Text> : null}
         </View>
-      </View>
+      </TouchableOpacity>
     );
   },
 );

@@ -4,8 +4,8 @@ import { useRef } from 'react';
 import { SEND_OTP_QUERY_KEY } from '../../constant/constant';
 import { sendOtp } from '../../store/apis';
 import {
-  SendOtpPayload,
-  SendOtpResponse,
+    SendOtpPayload,
+    SendOtpResponse,
 } from '../../types/auth/sendOtp.types';
 
 export const useSendOtpMutation = (): UseMutationResult<

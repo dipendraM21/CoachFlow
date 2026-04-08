@@ -7,7 +7,8 @@ import { formatDate } from './utils';
 
 interface BatchCardProps {
   batch: Batch;
-  onViewDetails: (batchId: string) => void;
+  onViewDetails?: (batchId: string) => void;
+  showFooter?: boolean;
 }
 
 const InstituteIcon = ({
@@ -37,9 +38,9 @@ const InstituteIcon = ({
 };
 
 export const BatchCard: React.FC<BatchCardProps> = React.memo(
-  ({ batch, onViewDetails }) => {
+  ({ batch, onViewDetails, showFooter = true }) => {
     const handleViewDetails = React.useCallback(() => {
-      onViewDetails(batch.id);
+      onViewDetails?.(batch.id);
     }, [batch.id, onViewDetails]);
 
     const seatStatus = useMemo(() => {
@@ -49,7 +50,10 @@ export const BatchCard: React.FC<BatchCardProps> = React.memo(
         text: `${batch.seatsLeft} Seats Left`,
         color: '#047857',
         bg: '#ECFDF5',
+        backgroundColor:''
       };
+
+
     }, [batch.seatsLeft]);
 
     return (
@@ -68,7 +72,7 @@ export const BatchCard: React.FC<BatchCardProps> = React.memo(
                   </Text>
                   {batch.institute.isVerified && (
                     <Image
-                      source={require('../../assets/images/png/blue-tick.jpeg')}
+                      source={require('../../assets/images/png/blue-tick-r.webp')}
                       style={batchCardStyles.verifiedBadge}
                     />
                   )}
@@ -78,11 +82,35 @@ export const BatchCard: React.FC<BatchCardProps> = React.memo(
                 </Text>
               </View>
             </View>
+            {batch.status && (
+              <View
+                style={[
+                  batchCardStyles.statusBadge,
+                  batchCardStyles[
+                    `statusBadge${
+                      batch.status
+                    }` as keyof typeof batchCardStyles
+                  ],
+                ]}
+              >
+                <Text
+                  style={[
+                    batchCardStyles.statusBadgeText,
+                    batchCardStyles[
+                      `statusBadgeText${
+                        batch.status
+                      }` as keyof typeof batchCardStyles
+                    ],
+                  ]}
+                >
+                  {batch.status}
+                </Text>
+              </View>
+            )}
           </View>
 
           <View style={batchCardStyles.titleSection}>
             <Text style={batchCardStyles.batchTitle}>{batch.name}</Text>
-
             <View style={batchCardStyles.chipsRow}>
               {batch.subtitle.split('•').map((chip, index) => (
                 <View key={index} style={batchCardStyles.chipContainer}>
@@ -90,7 +118,6 @@ export const BatchCard: React.FC<BatchCardProps> = React.memo(
                 </View>
               ))}
             </View>
-
             {batch.shortDescription ? (
               <Text style={batchCardStyles.shortDescription} numberOfLines={2}>
                 {batch.shortDescription}
@@ -108,7 +135,6 @@ export const BatchCard: React.FC<BatchCardProps> = React.memo(
                   {formatDate(batch.startDate)}
                 </Text>
               </View>
-
               <View style={batchCardStyles.gridItem}>
                 <View style={batchCardStyles.gridLabelRow}>
                   <Text style={batchCardStyles.gridLabel}>MODE</Text>
@@ -130,7 +156,6 @@ export const BatchCard: React.FC<BatchCardProps> = React.memo(
                   {batch.totalMonths ? `${batch.totalMonths} Months` : 'N/A'}
                 </Text>
               </View>
-
               <View style={batchCardStyles.gridItem}>
                 <View style={batchCardStyles.gridLabelRow}>
                   <Text style={batchCardStyles.gridLabel}>FEES</Text>
@@ -148,37 +173,40 @@ export const BatchCard: React.FC<BatchCardProps> = React.memo(
             </View>
           </View>
 
-          <View style={batchCardStyles.footer}>
-            <View
-              style={[
-                batchCardStyles.statusChip,
-                { backgroundColor: seatStatus.bg },
-              ]}
-            >
+          {showFooter && (
+            <View style={batchCardStyles.footer}>
               <View
                 style={[
-                  batchCardStyles.statusDot,
-                  { backgroundColor: seatStatus.color },
-                ]}
-              />
-              <Text
-                style={[
-                  batchCardStyles.statusText,
-                  { color: seatStatus.color },
+                  batchCardStyles.statusChip,
+                  { backgroundColor: seatStatus.bg },
                 ]}
               >
-                {seatStatus.text}
-              </Text>
+                <View
+                  style={[
+                    batchCardStyles.statusDot,
+                    { backgroundColor: seatStatus.color },
+                  ]}
+                />
+                <Text
+                  style={[
+                    batchCardStyles.statusText,
+                    { color: seatStatus.color },
+                  ]}
+                >
+                  {seatStatus.text}
+                </Text>
+              </View>
+              <TouchableOpacity
+                style={batchCardStyles.viewDetailsButton}
+                onPress={handleViewDetails}
+                activeOpacity={0.7}
+              >
+                <Text style={batchCardStyles.viewDetailsText}>
+                  View Batches
+                </Text>
+              </TouchableOpacity>
             </View>
-
-            <TouchableOpacity
-              style={batchCardStyles.viewDetailsButton}
-              onPress={handleViewDetails}
-              activeOpacity={0.7}
-            >
-              <Text style={batchCardStyles.viewDetailsText}>VIEW DETAILS</Text>
-            </TouchableOpacity>
-          </View>
+          )}
         </View>
       </View>
     );

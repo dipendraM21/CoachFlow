@@ -6,21 +6,23 @@ import axios, {
   InternalAxiosRequestConfig,
 } from 'axios';
 import { Platform } from 'react-native';
-import Config from 'react-native-config';
+import Config from '../config';
 import { getDataFromAsyncStorage, removeItemFromAsyncStorage } from './storage';
 
 class NetworkClient {
   private service: AxiosInstance;
+  private onUnauthorized: (() => void) | null = null;
 
   constructor() {
     const baseURL =
       Config.BASE_URL || 'https://vishal-backend-kqvl.onrender.com/api/';
+
     this.service = axios.create({
       baseURL,
+      timeout: 60000,
       headers: {
         'Content-Type': 'application/json',
       },
-      timeout: 60000, // 60 seconds timeout (increased for cold starts)
     });
 
     this.service.interceptors.request.use(
@@ -34,46 +36,100 @@ class NetworkClient {
     );
   }
 
-  // Interceptor: Request
+  // 🔐 Set Unauthorized Callback
+  public setUnauthorizedCallback(callback: () => void) {
+    this.onUnauthorized = callback;
+  }
+
+  // 📤 REQUEST INTERCEPTOR
   private handleRequest = async (
     config: InternalAxiosRequestConfig,
   ): Promise<InternalAxiosRequestConfig> => {
-    // Set headers
+    // Add platform header
     config.headers['x-client-type'] =
       Platform.OS === 'android' ? 'mobile-android' : 'mobile-ios';
 
-    // Get Token
+    // Attach token
     const token = await getDataFromAsyncStorage('accessToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
 
-    // Dynamic Base URL support (Example adaptation)
+    // Dynamic base URL (analytics case)
     if (config.url?.startsWith('log-analytics') && Config.ANALYTICS_BASE_URL) {
       config.baseURL = Config.ANALYTICS_BASE_URL;
     }
+
+    // ✅ If the request body is FormData, remove Content-Type so the
+    // runtime can auto-set 'multipart/form-data; boundary=...' correctly.
+    // This must run in the interceptor (last step) to avoid being overwritten.
+    if (config.data instanceof FormData) {
+      delete config.headers['Content-Type'];
+    }
+
+    // 🔍 DEBUG LOG
+    console.log('🚀 API REQUEST:', {
+      method: config.method?.toUpperCase(),
+      url: `${config.baseURL}${config.url}`,
+      data: config.data,
+      headers: config.headers,
+    });
 
     return config;
   };
 
   private handleRequestError = (error: AxiosError): Promise<AxiosError> => {
+    console.log('❌ REQUEST ERROR:', error.message);
     return Promise.reject(error);
   };
 
-  private onUnauthorized: (() => void) | null = null;
-
-  public setUnauthorizedCallback(callback: () => void) {
-    this.onUnauthorized = callback;
-  }
-
-  // Interceptor: Response
+  // 📥 RESPONSE SUCCESS
   private handleSuccess = (response: AxiosResponse): AxiosResponse => {
+    console.log('✅ API RESPONSE:', {
+      url: response.config.url,
+      status: response.status,
+      data: response.data,
+    });
     return response;
   };
 
+  // ❌ RESPONSE ERROR
   private handleError = async (error: AxiosError): Promise<never> => {
-    if (error.response?.status === 401 || error.response?.status === 429) {
-      // Handle Unauthorized Access or Too many requests
+    console.log('🔥 API ERROR:', {
+      message: error.message,
+      code: error.code,
+      url: error.config?.url,
+      response: error.response?.data,
+      status: error.response?.status,
+    });
+
+    // 🚨 NETWORK ERROR (Potential Timeout or DNS Issue)
+    if (!error.response) {
+      console.error('❌ NETWORK ERROR / TIMEOUT:', {
+        message: error.message,
+        code: error.code,
+        config: {
+          url: `${error.config?.baseURL}${error.config?.url}`,
+          method: error.config?.method?.toUpperCase(),
+          timeout: error.config?.timeout,
+        },
+        // Log the raw error for deeper inspection in DevTools
+        rawError: error,
+      });
+
+      if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+        throw new Error(
+          'Connection timed out. Render may be waking up - please try again in 30 seconds.',
+        );
+      }
+
+      throw new Error(
+        'Network error. Please check your internet or verify if the server is reachable.',
+      );
+    }
+
+    // 🚨 UNAUTHORIZED / RATE LIMIT
+    if (error.response.status === 401 || error.response.status === 429) {
       console.warn('Session expired or Too many requests. Logging out...');
       await removeItemFromAsyncStorage('accessToken');
 
@@ -81,10 +137,16 @@ class NetworkClient {
         this.onUnauthorized();
       }
     }
-    return Promise.reject(error);
+
+    // 🚨 SERVER ERROR MESSAGE
+    const message =
+      (error.response.data as any)?.message ||
+      'Something went wrong. Please try again.';
+
+    throw new Error(message);
   };
 
-  // Type-Safe Request Wrappers
+  // 🔁 GENERIC REQUEST METHOD
   private async request<T>(
     method: string,
     url: string,
@@ -92,8 +154,6 @@ class NetworkClient {
     config?: AxiosRequestConfig,
   ): Promise<T> {
     try {
-      const baseURL = this.service.defaults.baseURL || '';
-      console.log('API Request URL:', `${baseURL}${url}`);
       const response = await this.service.request<T>({
         method,
         url,
@@ -106,12 +166,12 @@ class NetworkClient {
     }
   }
 
-  // Public Methods
-  public async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+  // 📦 PUBLIC METHODS
+  public get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
     return this.request<T>('GET', url, undefined, config);
   }
 
-  public async post<T>(
+  public post<T>(
     url: string,
     data?: unknown,
     config?: AxiosRequestConfig,
@@ -119,7 +179,7 @@ class NetworkClient {
     return this.request<T>('POST', url, data, config);
   }
 
-  public async put<T>(
+  public put<T>(
     url: string,
     data: unknown,
     config?: AxiosRequestConfig,
@@ -127,7 +187,7 @@ class NetworkClient {
     return this.request<T>('PUT', url, data, config);
   }
 
-  public async patch<T>(
+  public patch<T>(
     url: string,
     data: unknown,
     config?: AxiosRequestConfig,
@@ -135,7 +195,7 @@ class NetworkClient {
     return this.request<T>('PATCH', url, data, config);
   }
 
-  public async delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+  public delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
     return this.request<T>('DELETE', url, undefined, config);
   }
 }

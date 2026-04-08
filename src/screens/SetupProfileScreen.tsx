@@ -1,11 +1,14 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useQueryClient } from '@tanstack/react-query';
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
+  Alert,
   Image,
   KeyboardAvoidingView,
+  PermissionsAndroid,
   Platform,
   ScrollView,
   StyleSheet,
@@ -13,7 +16,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { launchImageLibrary } from 'react-native-image-picker';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ThemeButton } from '../components/Button/Button';
 import { CityPicker } from '../components/CityPicker/CityPicker';
@@ -27,13 +30,14 @@ import {
   useCreateProfileMutation,
   useUpdateProfileMutation,
 } from '../hooks/mutations/useProfileMutation';
+import { useUploadProfilePhotoMutation } from '../hooks/mutations/useUploadProfilePhotoMutation';
 import { useAuthData } from '../hooks/queries/useAuthData';
-import { uploadStudentProfilePhoto } from '../store/apis';
 import colors from '../theme/colors';
 import { GetAuthUserResponse } from '../types/auth/sendOtp.types';
 import { RootStackParamList } from '../types/navigation';
 import { UpdateProfilePayload } from '../types/profile';
 import { showError, showSuccess } from '../utils/toast';
+import { requestCameraPermission, requestGalleryPermission } from '../utils/permissions';
 
 // 1. Define Form Types
 type SetupProfileFormValues = {
@@ -61,6 +65,7 @@ export const SetupProfileScreen: React.FC = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const route = useRoute<SetupProfileScreenRouteProp>();
+  const { t } = useTranslation();
   const { authUser } = useAuthData();
   const { updateUserStatus } = useAuth();
   const queryClient = useQueryClient();
@@ -76,8 +81,9 @@ export const SetupProfileScreen: React.FC = () => {
     useCreateProfileMutation();
   const isLoading = isUpdating || isCreating;
 
-  const [isUploadingImage, setIsUploadingImage] = React.useState(false);
-  const [imageUri, setImageUri] = React.useState<string | null>(null);
+  const { mutate: uploadPhoto, isPending: isUploadingImage } =
+    useUploadProfilePhotoMutation();
+  const [imageUri, setImageUri] = useState<string | null>(null);
 
   const {
     control,
@@ -100,11 +106,11 @@ export const SetupProfileScreen: React.FC = () => {
               authUser.profile.gender.slice(1)) as 'Male' | 'Female')
           : null,
     },
-    mode: 'onChange',
+    mode: 'onSubmit',
   });
 
   // Reset form when authUser loads (handles async data fetching)
-  React.useEffect(() => {
+  useEffect(() => {
     if (isEditMode && authUser) {
       setImageUri(authUser.profile?.avatar || null);
 
@@ -122,71 +128,116 @@ export const SetupProfileScreen: React.FC = () => {
     }
   }, [authUser, isEditMode, reset]);
 
-  const handleImagePick = async () => {
-    try {
-      const result = await launchImageLibrary({
-        mediaType: 'photo',
-        selectionLimit: 1,
-        includeBase64: false,
-      });
-
-      if (result.didCancel || !result.assets?.[0]) return;
-
-      const asset = result.assets[0];
-      if (!asset.uri) return;
-
-      if (asset.fileSize && asset.fileSize > 5 * 1024 * 1024) {
-        showError('Image size should be less than 5MB');
+  const processImage = useCallback(
+    async (response: any) => {
+      if (response.didCancel) return;
+      if (response.errorCode) {
+        if (response.errorCode === 'camera_unavailable') {
+          showError('Camera not available on this device');
+        } else if (response.errorCode === 'permission') {
+          showError('Permission denied');
+        } else {
+          showError(response.errorMessage || 'Gallery not available or error occurred');
+        }
         return;
       }
 
-      setIsUploadingImage(true);
-      const formData = new FormData();
-      formData.append('profilePhoto', {
-        uri: asset.uri,
-        name: asset.fileName || 'profile.jpg',
-        type: asset.type || 'image/jpeg',
-      });
-
-      try {
-        const response = await uploadStudentProfilePhoto(formData);
-        if (response.success && response.data?.url) {
-          setImageUri(response.data.url);
-          showSuccess('Profile photo uploaded successfully');
-
-          // Optimistically update query cache for the image
-          if (authUser) {
-            queryClient.setQueryData(
-              AUTH_USER_QUERY_KEY,
-              (oldData: GetAuthUserResponse | undefined) => {
-                if (!oldData) return oldData;
-                return {
-                  ...oldData,
-                  data: {
-                    ...oldData.data,
-                    user: {
-                      ...oldData.data.user,
-                      profile: {
-                        ...oldData.data.user.profile,
-                        avatar: response.data.url,
-                      },
-                    },
-                  },
-                };
-              },
-            );
-          }
+      const asset = response.assets?.[0];
+      if (asset && asset.uri) {
+        // 1. Validate File Size (Max 5 MB)
+        const MAX_SIZE = 5 * 1024 * 1024; // 5 MB in bytes
+        if (asset.fileSize && asset.fileSize > MAX_SIZE) {
+          showError('Image size must be under 5 MB');
+          return;
         }
-      } catch (error) {
-        console.error('Upload error', error);
-        showError('Failed to upload image. Please try again.');
-      } finally {
-        setIsUploadingImage(false);
+
+        // 2. Validate File Type
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        if (asset.type && !allowedTypes.includes(asset.type)) {
+          showError('Only JPEG, PNG, and WebP images are allowed');
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append('profilePhoto', {
+          uri: asset.uri,
+          type: asset.type || 'image/jpeg',
+          name: asset.fileName || 'profile.jpg',
+        } as any);
+
+        uploadPhoto(formData, {
+          onSuccess: data => {
+            if (data.success && data.data?.url) {
+              setImageUri(data.data.url);
+              showSuccess('Profile photo uploaded successfully');
+            } else {
+              showError(data.message || 'Failed to upload photo');
+            }
+          },
+          onError: (error: any) => {
+            showError(
+              error?.message || 'Failed to upload photo. Please check your network connection.',
+            );
+          },
+        });
       }
-    } catch (err) {
-      console.error('Picker error', err);
-    }
-  };
+    },
+    [uploadPhoto],
+  );
+
+  const handleImagePick = useCallback(() => {
+    Alert.alert(
+      t('profile.change_photo_title' as any, 'Change Profile Photo'),
+      t(
+        'profile.change_photo_message' as any,
+        'Select an option to update your photo',
+      ),
+      [
+        {
+          text: t('profile.camera' as any, 'Take Photo'),
+          onPress: async () => {
+            const hasPermission = await requestCameraPermission();
+            if (hasPermission) {
+              launchCamera(
+                {
+                  mediaType: 'photo',
+                  quality: 0.7,
+                  maxWidth: 800,
+                  maxHeight: 800,
+                },
+                processImage,
+              );
+            } else {
+              showError('Camera permission denied');
+            }
+          },
+        },
+        {
+          text: t('profile.gallery' as any, 'Choose from Gallery'),
+          onPress: async () => {
+            const hasPermission = await requestGalleryPermission();
+            if (hasPermission) {
+              launchImageLibrary(
+                {
+                  mediaType: 'photo',
+                  quality: 0.7,
+                  maxWidth: 800,
+                  maxHeight: 800,
+                },
+                processImage,
+              );
+            } else {
+              showError('Gallery permission denied');
+            }
+          },
+        },
+        {
+          text: t('profile.cancel' as any, 'Cancel'),
+          style: 'cancel',
+        },
+      ],
+    );
+  }, [t, processImage]);
 
   const onSubmit = (data: SetupProfileFormValues) => {
     if (!data.dob || !data.gender) return;
@@ -273,7 +324,9 @@ export const SetupProfileScreen: React.FC = () => {
   return (
     <View style={[styles.container, { paddingBottom: insets.bottom }]}>
       <ScreenHeader
-        title={isEditMode ? 'Edit Profile' : 'Setup Profile'}
+        title={
+          isEditMode ? t('profile.edit_profile') : t('profile.setup_profile')
+        }
         showBackButton={isEditMode}
         onBackPress={() => navigation.goBack()}
         backgroundColor={colors.backgroundLight}
@@ -324,15 +377,11 @@ export const SetupProfileScreen: React.FC = () => {
                   value: 3,
                   message: 'Full Name must be at least 3 characters',
                 },
-                pattern: {
-                  value: /^[a-zA-Z\s]*$/,
-                  message: 'Only alphabets and spaces allowed',
-                },
               }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
-                  label="Full Name"
-                  placeholder="e.g. Rahul Sharma"
+                  label={t('profile.full_name')}
+                  placeholder={t('profile.full_name_placeholder')}
                   value={value}
                   onChangeText={onChange}
                   onBlur={onBlur}
@@ -343,10 +392,10 @@ export const SetupProfileScreen: React.FC = () => {
 
             {/* Phone Number - Disabled */}
             <Input
-              label="Phone Number"
+              label={t('common.phone_number')}
               value={authUser?.phone || ''}
               disabled={true}
-              placeholder="Phone Number"
+              placeholder={t('common.phone_number_placeholder')}
             />
 
             {/* Date of Birth */}
@@ -357,20 +406,26 @@ export const SetupProfileScreen: React.FC = () => {
                 required: 'Date of Birth is required',
                 validate: value => {
                   if (!value) return 'Date of Birth is required';
-                  if (value > new Date()) return 'Date cannot be in the future';
+                  const maxDate = new Date();
+                  maxDate.setFullYear(maxDate.getFullYear() - 6);
+                  if (value > maxDate) return 'Minimum age should be 6 years';
                   return true;
                 },
               }}
-              render={({ field: { onChange, value } }) => (
-                <DatePicker
-                  label="Date of Birth"
-                  value={value}
-                  onChange={onChange}
-                  error={errors.dob?.message}
-                  placeholder="DD/MM/YYYY"
-                  maximumDate={new Date()} // Prevent future dates in picker
-                />
-              )}
+              render={({ field: { onChange, value } }) => {
+                const maxDate = new Date();
+                maxDate.setFullYear(maxDate.getFullYear() - 6);
+                return (
+                  <DatePicker
+                    label={t('profile.date_of_birth')}
+                    value={value}
+                    onChange={onChange}
+                    error={errors.dob?.message}
+                    placeholder={t('profile.select_date')}
+                    maximumDate={maxDate} // Prevent future dates and enforce min age in picker
+                  />
+                );
+              }}
             />
 
             {/* City */}
@@ -382,7 +437,7 @@ export const SetupProfileScreen: React.FC = () => {
                 <CityPicker
                   value={value}
                   onChange={onChange} // CityPicker onChange passes value string directly
-                  placeholder="Select City"
+                  placeholder={t('common.select_city')}
                   error={errors.city?.message}
                 />
               )}
@@ -395,10 +450,10 @@ export const SetupProfileScreen: React.FC = () => {
               rules={{ required: 'Gender is required' }}
               render={({ field: { onChange, value } }) => (
                 <SelectionTab
-                  label="Gender"
+                  label={t('profile.gender')}
                   options={[
-                    { label: 'Male', value: 'Male' },
-                    { label: 'Female', value: 'Female' },
+                    { label: t('profile.male'), value: 'Male' },
+                    { label: t('profile.female'), value: 'Female' },
                   ]}
                   selectedValue={value}
                   onSelect={onChange}
@@ -412,7 +467,11 @@ export const SetupProfileScreen: React.FC = () => {
         {/* Save Button - Sticky Footer */}
         <View style={styles.footer}>
           <ThemeButton
-            title={isEditMode ? 'Save Profile' : 'Create Profile'}
+            title={
+              isEditMode
+                ? t('profile.save_profile')
+                : t('profile.create_profile')
+            }
             onPress={handleSubmit(onSubmit)}
             isLoading={isLoading}
             disabled={isLoading}

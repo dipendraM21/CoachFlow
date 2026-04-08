@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { ThemeButton } from '../components/Button/Button';
 // Actually, OtpInput takes error prop.
 import OtpInput from '../components/TextInputField/OtpInput';
@@ -18,7 +19,6 @@ import { useVerifyOtpMutation } from '../hooks/mutations/useVerifyOtpMutation';
 import { verifyOtpStyles } from '../theme/styles/verifyOtpStyles';
 import { GuestStackParamList } from '../types/navigation';
 import { showError, showSuccess } from '../utils/toast';
-import { translations } from '../utils/translation';
 
 type VerifyOtpScreenNavigationProp = NativeStackNavigationProp<
   GuestStackParamList,
@@ -35,6 +35,7 @@ export const VerifyOtpScreen: React.FC = () => {
   const navigation = useNavigation<VerifyOtpScreenNavigationProp>();
   const route = useRoute();
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
 
   // Auth & API
   const { setAuth } = useAuth();
@@ -93,7 +94,9 @@ export const VerifyOtpScreen: React.FC = () => {
           const { token, isNewUser } = response.data;
           await setAuth(token, isNewUser);
           // Auto-navigation by AppNavigator
-          showSuccess('Phone number verified successfully');
+          setTimeout(() => {
+            showSuccess('Phone number verified successfully');
+          }, 500);
         },
         onError: (err: unknown) => {
           const error = err as {
@@ -169,12 +172,12 @@ export const VerifyOtpScreen: React.FC = () => {
             <View style={verifyOtpStyles.titleSection}>
               <View style={verifyOtpStyles.titleContainer}>
                 <Text style={verifyOtpStyles.title}>
-                  {translations.VERIFY_PHONE}
+                  {t('auth.verify_phone')}
                 </Text>
                 <View style={verifyOtpStyles.titleAccent} />
               </View>
               <Text style={verifyOtpStyles.subtitle}>
-                {translations.CODE_SENT_TO}{' '}
+                {t('auth.code_sent_to')}{' '}
                 <Text style={verifyOtpStyles.phoneNumberHighlight}>
                   {formattedPhoneNumber}
                 </Text>
@@ -224,7 +227,7 @@ export const VerifyOtpScreen: React.FC = () => {
             <View style={verifyOtpStyles.timerSection}>
               {!isResendEnabled ? (
                 <Text style={verifyOtpStyles.timerText}>
-                  {translations.CODE_EXPIRES_IN}{' '}
+                  {t('auth.code_expires_in')}{' '}
                   <Text style={verifyOtpStyles.timerValue}>
                     {Math.floor(timer / 60)}:
                     {String(timer % 60).padStart(2, '0')}
@@ -232,7 +235,7 @@ export const VerifyOtpScreen: React.FC = () => {
                 </Text>
               ) : (
                 <ThemeButton
-                  title={translations.RESEND_CODE}
+                  title={t('auth.resend_code')}
                   onPress={handleResendCode}
                   variant="text"
                   size="md"
@@ -246,7 +249,7 @@ export const VerifyOtpScreen: React.FC = () => {
           {/* Action Buttons */}
           <View style={verifyOtpStyles.buttonContainer}>
             <ThemeButton
-              title={translations.VERIFY_AND_CONTINUE}
+              title={t('auth.verify_and_continue')}
               onPress={handleSubmit(onSubmit)}
               disabled={!isValid || isVerifying}
               isLoading={isVerifying}
@@ -254,7 +257,7 @@ export const VerifyOtpScreen: React.FC = () => {
             />
             <View style={verifyOtpStyles.changeNumberContainer}>
               <ThemeButton
-                title={translations.CHANGE_NUMBER}
+                title={t('auth.change_number')}
                 onPress={handleChangeNumber}
                 variant="text"
                 size="md"

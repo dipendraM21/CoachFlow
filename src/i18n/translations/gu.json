@@ -1,0 +1,92 @@
+{
+  "common": {
+    "select_language": "ભાષા પસંદ કરો",
+    "cancel": "રદ કરો",
+    "select_city": "શહેર પસંદ કરો",
+    "retry": "ફરી પ્રયાસ કરો",
+    "continue": "ચાલુ રાખો",
+    "welcome_back": "સ્વાગત છે",
+    "phone_number": "ફોન નંબર",
+    "phone_number_placeholder": "+91 98765 43210",
+    "required_field": "આ ફીલ્ડ જરૂરી છે",
+    "invalid_phone": "કૃપા કરીને માન્ય ભારતીય મોબાઈલ નંબર દાખલ કરો.",
+    "invalid_email": "કૃપા કરીને માન્ય ઈમેલ એડ્રેસ દાખલ કરો",
+    "invalid_name": "કૃપા કરીને માન્ય નામ દાખલ કરો",
+    "logo_text": "S",
+    "loading": "લોડ થઈ રહ્યું છે...",
+    "not_available": "ઉપલબ્ધ નથી",
+    "search_placeholder": "પરીક્ષા, કોચિંગ અથવા બેચ શોધો"
+  },
+  "auth": {
+    "enter_number_to_discover": "ઉચ્ચ બેચ શોધવા માટે તમારો નંબર દાખલ કરો",
+    "verify_phone": "ફોન વેરિફાઈ કરો",
+    "code_sent_to": "કોડ મોકલવામાં આવ્યો છે",
+    "verify_and_continue": "વેરિફાઈ અને ચાલુ રાખો",
+    "change_number": "નંબર બદલો",
+    "resend_code": "કોડ ફરીથી મોકલો",
+    "code_expires_in": "કોડ સમાપ્ત થાય છે",
+    "seconds": "સે"
+  },
+  "profile": {
+    "title": "મારી પ્રોફાઇલ",
+    "account": "એકાઉન્ટ",
+    "personal_info": "વ્યક્તિગત માહિતી",
+    "general": "સામાન્ય",
+    "help_support": "મદદ અને સપોર્ટ",
+    "language": "ભાષા",
+    "logout": "લોગ આઉટ",
+    "version": "સંસ્કરણ",
+    "setup_profile": "પ્રોફાઇલ સેટઅપ કરો",
+    "edit_profile": "પ્રોફાઇલ અપડેટ કરો",
+    "full_name": "આખું નામ",
+    "full_name_placeholder": "દા.ત. રાહુલ શર્મા",
+    "email_address": "ઈમેલ એડ્રેસ",
+    "email_placeholder": "rahul@example.com",
+    "city": "શહેર",
+    "date_of_birth": "જન્મ તારીખ",
+    "select_date": "DD/MM/YYYY",
+    "gender": "જાતિ",
+    "male": "પુરુષ",
+    "female": "સ્ત્રી",
+    "save_profile": "પ્રોફાઇલ સાચવો",
+    "create_profile": "પ્રોફાઇલ બનાવો"
+  },
+  "tabs": {
+    "classes": "વર્ગો",
+    "library": "લાઇબ્રેરી"
+  },
+  "batches": {
+    "no_batches_found": "આ સ્થાન પર હજુ સુધી કોઈ વર્ગો નથી",
+    "try_changing_city": "અન્ય શહેરનો પ્રયાસ કરો અથવા પછીથી તપાસો.",
+    "institute_details": "સંસ્થાની વિગતો",
+    "failed_load_details": "સંસ્થાની વિગતો લોડ કરવામાં નિષ્ફળ. કૃપા કરીને ફરી પ્રયાસ કરો.",
+    "no_institute_data_found": "સંસ્થાનો કોઈ ડેટા મળ્યો નથી.",
+    "academy_not_found": "એકેડેમી મળી નથી",
+    "call_us": "અમને કોલ કરો",
+    "email_us": "અમને ઈમેલ કરો",
+    "recent_batches": "તાજેતરની બેચ",
+    "all": "બધી",
+    "upcoming": "આવનારી",
+    "current": "ચાલુ",
+    "completed": "પૂર્ણ",
+    "no_status_batches_found": "કોઈ {{status}} બેચ મળી નથી.",
+    "batch_details": "બેચની વિગતો",
+    "batch_not_found": "બેચ મળી નથી અથવા લોડ કરવામાં ભૂલ.",
+    "key_information": "મુખ્ય માહિતી",
+    "start_date": "શરૂઆતની તારીખ",
+    "timing": "સમય",
+    "duration": "સમયગાળો",
+    "seats": "સીટ",
+    "total_fees": "કુલ ફી",
+    "call_now": "હમણાં કોલ કરો",
+    "seats_left": "{{count}} સીટ બાકી",
+    "seats_info": "{{left}} / {{total}} સીટ"
+  },
+  "library": {
+    "no_materials_found": "તમારા પસંદ કરેલા વિસ્તારમાં હજુ સુધી કોઈ લાઇબ્રેરી ઉપલબ્ધ નથી."
+  },
+  "languages": {
+    "en": "અંગ્રેજી",
+    "gu": "ગુજરાતી"
+  }
+}

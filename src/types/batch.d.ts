@@ -25,6 +25,7 @@ export interface BatchFeedItem {
     count: number;
   };
   institute: {
+    _id: string;
     name: string;
     logo: string | null;
     tagline: string;
@@ -45,6 +46,7 @@ export interface Batch {
     };
     isVerified?: boolean;
     phoneNumber?: string;
+    email?: string;
   };
   name: string;
   subtitle: string;
@@ -67,6 +69,8 @@ export interface Batch {
   instituteIcon?: 'graduation' | 'flask' | 'compass';
   instituteIconColor?: { bg: string; color: string };
   promoStatus?: string;
+  status?: 'Upcoming' | 'Current' | 'Completed';
+  isSubscribed?: boolean;
 }
 
 // API Response Type which mirrors the server data (Details)
@@ -120,6 +124,58 @@ export interface ApiBatch {
   };
 }
 
+export interface ClassItem {
+  _id: string;
+  className: string;
+  address: {
+    street: string;
+    city: string;
+    district?: string;
+    state: string;
+    pincode: string;
+    full: string;
+  };
+  phone: string;
+  logo: string | null;
+  isVerified: boolean;
+  isSubscribed: boolean;
+}
+
+export interface LibraryItem {
+  _id: string;
+  libraryName: string;
+  monthlyFee: number;
+  address: {
+    street: string;
+    city: string;
+    district: string;
+    state: string;
+    pincode: string;
+    full: string;
+  };
+  phone: string;
+  logo: string | null;
+  isVerified: boolean;
+  isSubscribed: boolean;
+}
+
+export interface GetClassesResponse {
+  statusCode: number;
+  success: boolean;
+  message: string;
+  data: {
+    classes: ClassItem[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      pages: number;
+      hasNextPage: boolean;
+      hasPrevPage: boolean;
+    };
+  };
+}
+
 export interface GetBatchesResponse {
   data: {
     batches: BatchFeedItem[]; // Use FeedItem for list
@@ -133,5 +189,22 @@ export interface GetBatchesResponse {
 export interface GetBatchDetailResponse {
   data: {
     batch: ApiBatch;
+  };
+}
+
+export interface GetLibrariesResponse {
+  statusCode: number;
+  success: boolean;
+  message: string;
+  data: {
+    libraries: LibraryItem[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      pages: number;
+      hasNextPage: boolean;
+      hasPrevPage: boolean;
+    };
   };
 }

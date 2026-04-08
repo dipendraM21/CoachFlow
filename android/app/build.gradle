@@ -1,6 +1,7 @@
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
+apply plugin: "com.google.gms.google-services"
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
 /**
@@ -58,7 +59,7 @@ react {
 /**
  * Set this to true to Run Proguard on Release builds to minify the Java bytecode.
  */
-def enableProguardInReleaseBuilds = false
+// R8/ProGuard shrinking is now enabled directly in buildTypes below
 
 /**
  * The preferred build flavor of JavaScriptCore (JSC)
@@ -78,19 +79,25 @@ android {
 
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.coachflow"
+    namespace "com.cortax.studybuddy"
     defaultConfig {
-        applicationId "com.coachflow"
+        applicationId "com.cortax.studybuddy"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.0.1"
     }
+    def buildingAppBundle = gradle.startParameter.taskNames.any { taskName ->
+        taskName.toLowerCase().contains("bundle")
+    }
+
     splits {
         abi {
             reset()
-            enable false
-            universalApk true
+            // Keep ABI splits for APK tasks; disable for AAB to avoid AGP shrunk-resources conflict.
+            enable !buildingAppBundle
+            include "armeabi-v7a", "arm64-v8a"
+            universalApk false
         }
     }
     signingConfigs {
@@ -100,17 +107,28 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            if (project.hasProperty('COACHFLOW_RELEASE_STORE_FILE')) {
+                storeFile file(COACHFLOW_RELEASE_STORE_FILE)
+                storePassword COACHFLOW_RELEASE_STORE_PASSWORD
+                keyAlias COACHFLOW_RELEASE_KEY_ALIAS
+                keyPassword COACHFLOW_RELEASE_KEY_PASSWORD
+            }
+        }
     }
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
+            minifyEnabled false
+            shrinkResources false
         }
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
-            minifyEnabled enableProguardInReleaseBuilds
-            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
     }
 }
@@ -118,6 +136,8 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
+    // Backported Android Photo Picker for API 30+; see react-native-image-picker README
+    implementation("androidx.activity:activity:1.9.3")
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
